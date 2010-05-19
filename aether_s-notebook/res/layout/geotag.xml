@@ -1,0 +1,5 @@
+<LinearLayout android:id="@+id/LinearLayout01" android:layout_width="fill_parent" android:layout_height="fill_parent" xmlns:android="http://schemas.android.com/apk/res/android" android:orientation="vertical"><Button android:id="@+id/Button01" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Text note"></Button>
+<Button android:id="@+id/Button02" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Voice Note"></Button>
+<Button android:id="@+id/Button03" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Image Note"></Button>
+<Button android:id="@+id/Button04" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Video Note"></Button>
+</LinearLayout>
