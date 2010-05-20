@@ -31,7 +31,7 @@ public class sensorlog2sql
 	throws Exception
 	{
 		Class.forName("com.mysql.jdbc.Driver");
-		Connection c = DriverManager.getConnection("jdbc:mysql://localhost/sensor", "root", "29yugbypmoI");
+		Connection c = DriverManager.getConnection("jdbc:mysql://localhost/sensor", "", "");
 		BufferedReader in = new BufferedReader(
 				new FileReader("sensorservice.log"));
 		String line;
