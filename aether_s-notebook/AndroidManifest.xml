@@ -9,7 +9,8 @@
 			android:icon="@drawable/icon"
 			android:name="GeoTagger"
 			android:label="@string/application_name"
-			android:allowClearUserData="true">
+			android:allowClearUserData="true"
+			android:debuggable="true">
 			
 		<activity 
 				android:name=".sensors.SensorServiceConfigurator"
@@ -43,8 +44,9 @@
 		<service android:name=".sensors.SignalStrengthLoggingService" />
 		<service android:name=".sensors.ServiceStateLoggingService" />
 		<service android:name=".sensors.TelephonyLoggingService" />
-		<service android:name=".sensors.LocationLoggingService" />
-
+		
+		<service android:name=".sensors.LocationService" android:enabled="true" />
+		<service android:name=".sensors.FileSystemLoggingListenerService" android:enabled="true" />
 	</application>
 	
 	<uses-sdk android:minSdkVersion="3" />
