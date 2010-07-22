@@ -1,0 +1,10 @@
+<resources>
+
+    <string-array name="storageCleanupStrategyOptions">
+    	<item>Delete old files</item>  	
+    </string-array>
+    
+    <string-array name="storageCleanupStrategyValues">
+    	<item>0</item>
+    </string-array>
+</resources>

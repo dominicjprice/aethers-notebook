@@ -72,7 +72,8 @@ extends Service
 	{
 		super.onDestroy();
 		logger.verbose("SensorLoggingService.onDestroy()");
-		onDestroyInternal();		
+		onDestroyInternal();	
+		unbindService(loggingServiceConnection);
 		sensorLogger.stop();
 	}
 
@@ -84,21 +85,22 @@ extends Service
 		
 		Intent i = new Intent(this, SensorService.class);
 		i.setAction(SensorService.SENSOR_SERVICE_LOG_ACTION);
-		bindService(i, new ServiceConnection() 
-		{	
-			@Override
-			public void onServiceDisconnected(ComponentName name){}
-			
-			@Override
-			public void onServiceConnected(ComponentName name, IBinder service) 
-			{
-				dataLogger = (SensorServiceLogger)service;
-				new Thread(sensorLogger = new SensorLogger()).start();
-			}
-		}, 0);
+		bindService(i, loggingServiceConnection, 0);
 			
 		onStartInternal();
 	}
+	
+	private ServiceConnection loggingServiceConnection = new ServiceConnection() {   
+        @Override
+        public void onServiceDisconnected(ComponentName name){}
+        
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) 
+        {
+            dataLogger = (SensorServiceLogger)service;
+            new Thread(sensorLogger = new SensorLogger()).start();
+        }
+    };
 	
 	protected final void log(String data)
 	{			

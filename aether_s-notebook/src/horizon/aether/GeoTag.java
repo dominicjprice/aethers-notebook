@@ -1,5 +1,8 @@
 package horizon.aether;
 
+import horizon.aether.sensors.Preferences;
+import horizon.android.logging.Logger;
+
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -9,13 +12,14 @@ import java.io.PrintWriter;
 import org.json.JSONException;
 import org.json.JSONStringer;
 
-import horizon.android.logging.Logger;
-import horizon.aether.R;
 import android.app.Activity;
 import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
+import android.view.MenuItem.OnMenuItemClickListener;
 import android.widget.Button;
 
 public class GeoTag 
@@ -131,6 +135,24 @@ extends Activity
             }
         });        
     }
+	
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+	    super.onCreateOptionsMenu(menu);
+	    
+	    // Preferences
+	    MenuItem menuItem = menu.add(0, Menu.FIRST, Menu.NONE, R.string.menu_item_preferences);
+	    menuItem.setOnMenuItemClickListener(new OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                Intent settingsActivity = new Intent(getBaseContext(), Preferences.class);
+                startActivity(settingsActivity);
+                return true;
+            }
+	    });
+	    
+	    return true;
+	}
 	
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) 

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"> 
+
+	<EditTextPreference
+		android:key="@string/Preferences_logsDir"
+		android:title="Logs directory" 
+		android:summary="Location of the log files"
+		android:defaultValue="/sdcard/aether/" />
+
+	<EditTextPreference 
+		android:key="@string/Preferences_maxFileSize"
+		android:title="Maximum file size" 
+		android:summary="in MB"
+		android:defaultValue="10" />
+
+	<EditTextPreference
+		android:key="@string/Preferences_maxTotalCapacity"
+		android:title="Maximum total capacity"
+		android:summary="in MB"
+		android:defaultValue="100" />
+		
+	<ListPreference
+		android:key="@string/Preferences_storageCleanupStrategy"
+		android:title="Storage cleanup strategy"
+		android:summary="What to do when the maximum total capacity has been reached"
+		android:entries="@array/storageCleanupStrategyOptions"
+		android:entryValues="@array/storageCleanupStrategyValues"
+		android:defaultValue="0" />	
+			
+	<PreferenceCategory
+		android:key="@string/Preferences_sensors"
+		android:title="Sensors" />			
+</PreferenceScreen>

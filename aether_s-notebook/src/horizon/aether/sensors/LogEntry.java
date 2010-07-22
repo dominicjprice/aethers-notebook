@@ -1,5 +1,8 @@
 package horizon.aether.sensors;
 
+import org.json.JSONException;
+import org.json.JSONStringer;
+
 public class LogEntry {
 
     private long timestamp;
@@ -21,9 +24,23 @@ public class LogEntry {
     
     @Override
     public String toString() {
-        return this.timestamp + ":" + 
-               this.identifier + ":" +
-               this.location + ":" + 
-               this.dataBlob;
-    }    
+        JSONStringer data = new JSONStringer();
+        try {
+            data.object();
+            data.key("timestamp");
+            data.value(timestamp);
+            data.key("identifier");
+            data.value(identifier);
+            data.key("location");
+            data.value(location);
+            data.key("dataBlob");
+            data.value(dataBlob);
+            data.endObject();
+        }
+        catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
+        
+        return data.toString();
+    }
 }

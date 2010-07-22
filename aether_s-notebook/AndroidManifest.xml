@@ -11,18 +11,7 @@
 			android:label="@string/application_name"
 			android:allowClearUserData="true"
 			android:debuggable="true">
-			
-		<activity 
-				android:name=".sensors.SensorServiceConfigurator"
-				android:icon="@drawable/icon"
-				android:label="@string/application_sensorservice_configurator_name"
-				android:launchMode="singleTask">
-			<intent-filter>
-				<action android:name="android.intent.action.MAIN" />
-				<category android:name="android.intent.category.LAUNCHER" />
-			</intent-filter>
-		</activity>
-		
+ 		
 		<activity
 				android:launchMode="singleTask"
 				android:label="@string/application_geotag_name" android:name=".GeoTag">
@@ -32,6 +21,8 @@
 			</intent-filter>
 		</activity>
 		
+		<activity android:name=".sensors.Preferences" android:label="Aether's Notebook Preferences" />
+				
 		<activity android:name=".TextNote" />
 		<activity android:name=".VoiceNote" />
 		<activity android:name=".ImageNote" />
@@ -47,6 +38,7 @@
 		
 		<service android:name=".sensors.LocationService" android:enabled="true" />
 		<service android:name=".sensors.FileSystemLoggingListenerService" android:enabled="true" />
+		
 	</application>
 	
 	<uses-sdk android:minSdkVersion="3" />
@@ -63,5 +55,5 @@
 	<uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
 	<uses-permission android:name="android.permission.RECORD_AUDIO" />
 	<uses-permission android:name="android.permission.WAKE_LOCK" />
-
+	
 </manifest>

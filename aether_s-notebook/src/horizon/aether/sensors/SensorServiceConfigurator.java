@@ -18,6 +18,7 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
+@Deprecated
 public class SensorServiceConfigurator 
 extends Activity
 {

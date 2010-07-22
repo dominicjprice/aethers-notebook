@@ -64,7 +64,7 @@ extends Service
         super.onCreate();
         
         // start location service
-        // TODO: should be on if at least one of the services is on?
+        // TODO: should be on if at least one of the sensors is on?
         startService(new Intent(this, LocationService.class));
         
         startService(new Intent(this, FileSystemLoggingListenerService.class));
@@ -77,14 +77,15 @@ extends Service
     {
         super.onDestroy();
         logger.verbose("SensorService.onDestroy()");
+                
         for(LoggingServiceDescriptor desc : loggingServices)
             stopService(desc.getIntent(this));
 
         // stop location service
         locationService.stopSelf();
         
-        // stop logging listener service
-        fsLoggingListener.stopSelf();
+        // stop file system logging listener service
+        fsLoggingListener.stopSelf();        
     }
 
     @Override
@@ -147,8 +148,8 @@ extends Service
         @Override
         public void registerListener(LoggingListenerService listener)
         throws RemoteException {
+            logger.verbose("SensorServiceLoggerStub.registerListener()");
             loggingListeners.add(listener);
-            logger.verbose("SensorServiceLoggerStub.registerListener(): logging listener added.");
         }
     }
     
@@ -174,7 +175,7 @@ extends Service
         public void stopLogger(LoggingServiceDescriptor descriptor)
         throws RemoteException 
         {
-            stopService(descriptor.getIntent(SensorService.this));
+            stopService(descriptor.getIntent(SensorService.this));            
             loggingServicesStatuses.put(descriptor, Boolean.FALSE);
         }
 
