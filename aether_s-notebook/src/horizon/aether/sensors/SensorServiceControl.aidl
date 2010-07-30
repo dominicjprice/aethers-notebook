@@ -11,4 +11,8 @@ interface SensorServiceControl
 	void startLogger(in LoggingServiceDescriptor descriptor);
 	
 	boolean getLoggerStatus(in LoggingServiceDescriptor descriptor);
+	
+	void startLogging();
+	
+	void stopLogging();
 }

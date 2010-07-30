@@ -1,6 +1,7 @@
 package horizon.aether;
 
 import horizon.aether.sensors.Preferences;
+import horizon.aether.sensors.UploadingService;
 import horizon.android.logging.Logger;
 
 import java.io.BufferedWriter;
@@ -141,14 +142,25 @@ extends Activity
 	    super.onCreateOptionsMenu(menu);
 	    
 	    // Preferences
-	    MenuItem menuItem = menu.add(0, Menu.FIRST, Menu.NONE, R.string.menu_item_preferences);
-	    menuItem.setOnMenuItemClickListener(new OnMenuItemClickListener() {
+	    MenuItem preferencesMenuItem = menu.add(0, Menu.FIRST, Menu.NONE, R.string.menu_item_preferences);
+	    preferencesMenuItem.setOnMenuItemClickListener(new OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
                 Intent settingsActivity = new Intent(getBaseContext(), Preferences.class);
                 startActivity(settingsActivity);
                 return true;
             }
+	    });
+	    
+	    // Upload
+	    MenuItem uploadMenuItem = menu.add(0, Menu.FIRST, Menu.NONE, "Upload archives");
+	    uploadMenuItem.setOnMenuItemClickListener(new OnMenuItemClickListener() {
+	        @Override
+	        public boolean onMenuItemClick(MenuItem item) {
+	            Intent uploadIntent = new Intent(getBaseContext(), UploadingService.class);
+	            startService(uploadIntent);
+	            return true;
+	        }
 	    });
 	    
 	    return true;

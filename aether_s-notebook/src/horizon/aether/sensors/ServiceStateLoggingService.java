@@ -8,6 +8,9 @@ import android.telephony.PhoneStateListener;
 import android.telephony.ServiceState;
 import android.telephony.TelephonyManager;
 
+/**
+ * Manages the logging of service state data.
+ */
 public class ServiceStateLoggingService
 extends SensorLoggingService
 {

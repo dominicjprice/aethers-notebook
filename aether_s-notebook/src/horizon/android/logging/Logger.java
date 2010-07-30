@@ -5,6 +5,10 @@ import java.util.Map;
 
 import android.util.Log;
 
+/**
+ * Class that holds all the loggers of the application along with some 
+ * wrapper methods for logging.
+ */
 public class Logger 
 {
 	private static final Map<Package, Logger> loggers = new HashMap<Package, Logger>();

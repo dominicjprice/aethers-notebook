@@ -10,10 +10,15 @@ import java.io.OutputStream;
 import java.util.zip.DeflaterOutputStream;
 import java.util.zip.InflaterInputStream;
 
+/**
+ * Class that provides static helper methods that deal
+ * with compression.
+ */
 public class CompressionUtils {
 
     /**
      * Compresses a given file using the DEFLATE algorithm.
+     * 
      * @param pathIn: The path of the file to compress
      * @param pathOut: The path of the new compressed file
      * @throws IOException 
@@ -32,6 +37,7 @@ public class CompressionUtils {
     /**
      * Uncompresses a file that has been compressed using 
      * the DEFLATE algorithm.
+     * 
      * @param pathIn: The path of the compressed file
      * @param pathOut: The path of the new, uncompressed file.
      * @throws FileNotFoundException 

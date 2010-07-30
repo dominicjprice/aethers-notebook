@@ -2,6 +2,12 @@
 
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"> 
 
+	<CheckBoxPreference
+		android:key="@string/Preferences_loggingOn"
+		android:title="Logging"
+		android:summary="Turn logging on/off"
+		android:defaultValue="true" />
+		
 	<EditTextPreference
 		android:key="@string/Preferences_logsDir"
 		android:title="Logs directory" 
@@ -30,5 +36,6 @@
 			
 	<PreferenceCategory
 		android:key="@string/Preferences_sensors"
-		android:title="Sensors" />			
+		android:title="Sensors" />	
+				
 </PreferenceScreen>

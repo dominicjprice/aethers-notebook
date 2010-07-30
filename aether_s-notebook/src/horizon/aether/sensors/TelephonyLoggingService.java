@@ -6,6 +6,9 @@ import org.json.JSONStringer;
 import android.telephony.NeighboringCellInfo;
 import android.telephony.TelephonyManager;
 
+/**
+ * Manages the logging of telephony data.
+ */
 public class TelephonyLoggingService 
 extends SensorLoggingService 
 {

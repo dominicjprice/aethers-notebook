@@ -5,6 +5,13 @@ import android.content.Intent;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+/**
+ * Descriptor for the sensor services to hold the name, description and the 
+ * class of a logging service.
+ * 
+ * The class also implements Parcelable so that LoggingServiceDescriptor objects 
+ * can be send from one process to another through an AIDL interface.
+ */
 public class LoggingServiceDescriptor
 implements Parcelable
 {
@@ -28,6 +35,12 @@ implements Parcelable
         }
     };
 
+    /**
+     * Constructor.
+     * @param name
+     * @param description
+     * @param serviceClass
+     */
 	public LoggingServiceDescriptor(String name, String description, Class<?> serviceClass)
 	{
 		this.name = name;
@@ -49,12 +62,19 @@ implements Parcelable
 		}
 	}
 
+	/**
+	 * Describes the kinds of special objects contained in this Parcelable's 
+	 * marshalled representation.
+	 */
 	@Override
 	public int describeContents() 
 	{
 		return 0;
 	}
 
+	/**
+	 * Flattens this object in to a Parcel.
+	 */
 	@Override
 	public void writeToParcel(Parcel dest, int flags) 
 	{
@@ -63,6 +83,11 @@ implements Parcelable
 		dest.writeString(serviceClass.getName());
 	}
 	
+	/**
+	 * Returns the service intent.
+	 * @param context
+	 * @return
+	 */
 	public Intent getIntent(Context context)
 	{
 		return new Intent(context, serviceClass);

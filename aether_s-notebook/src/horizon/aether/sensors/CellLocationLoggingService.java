@@ -9,6 +9,9 @@ import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 import android.telephony.gsm.GsmCellLocation;
 
+/**
+ * Manages the logging of cell location data.  
+ */
 public class CellLocationLoggingService
 extends SensorLoggingService
 {

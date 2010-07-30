@@ -8,6 +8,9 @@ import android.content.Context;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
 
+/**
+ * Manages the logging of wifi data.
+ */
 public class WifiLoggingService 
 extends SensorLoggingService 
 {
@@ -30,9 +33,9 @@ extends SensorLoggingService
 			for(ScanResult result : wifiManager.getScanResults())
 			{
 				data.object();
-				data.key("BSSID");
+				data.key("bssid");
 				data.value(result.BSSID);
-				data.key("SSID");
+				data.key("ssid");
 				data.value(result.SSID);
 				data.key("capabilities");
 				data.value(result.capabilities);

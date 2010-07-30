@@ -11,6 +11,7 @@
 	<string name="menu_item_preferences">Preferences</string>
 	
 	<!-- Preferences activity -->
+	<string name="Preferences_loggingOn">loggingOn</string>
 	<string name="Preferences_logsDir">logsDir</string>
 	<string name="Preferences_maxFileSize">maxFileSize</string>
 	<string name="Preferences_maxTotalCapacity">maxTotalCapacity</string>

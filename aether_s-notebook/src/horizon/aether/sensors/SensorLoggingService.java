@@ -8,11 +8,19 @@ import android.content.ServiceConnection;
 import android.os.IBinder;
 import android.os.RemoteException;
 
+/**
+ * Service class that is inherited by all the sensors. Provides a logger thread
+ * that calls the sensor's doScan() method and sends the log entry to the log() 
+ * method of the sensor service through AIDL.
+ */
 public abstract class SensorLoggingService
 extends Service
 {
 	private static final Logger logger = Logger.getLogger(SensorLoggingService.class);
 	
+	/**
+	 * Logger thread that makes calls to the sensor's doScan() method.
+	 */
 	private class SensorLogger
 	implements Runnable
 	{
@@ -52,6 +60,9 @@ extends Service
 	
 	private SensorServiceLogger dataLogger; 
 	
+	/**
+	 * Called by the system when clients want to bind to the service.
+	 */
 	@Override
 	public final IBinder onBind(Intent intent) 
 	{
@@ -59,6 +70,11 @@ extends Service
 		return null;
 	}
 
+	/**
+	 * Called by the system when the service is created.
+	 * This calls the onCreateInternal() method that is implemented
+	 * in the child classes.
+	 */
 	@Override
 	public final void onCreate() 
 	{
@@ -67,6 +83,11 @@ extends Service
 		onCreateInternal();
 	}
 	
+	/**
+	 * Called by the system when the service is destroyed.
+	 * This calls the onDestroyInternal() method that is implemented
+	 * in the child classes and also unbinds from the sensor service.
+	 */
 	@Override
 	public final void onDestroy() 
 	{
@@ -77,6 +98,12 @@ extends Service
 		sensorLogger.stop();
 	}
 
+	/**
+	 * Called by the system when the service is started. 
+	 * This calls the onStartInternal() method that is implemented
+	 * in the child classes and also binds to the sensor service
+	 * to send the logging data.
+	 */
 	@Override
 	public void onStart(Intent intent, int startId) 
 	{
@@ -102,6 +129,10 @@ extends Service
         }
     };
 	
+    /**
+     * Sends some log data to the sensor service. 
+     * @param data: Data to log.
+     */
 	protected final void log(String data)
 	{			
 		try 

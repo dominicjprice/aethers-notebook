@@ -13,6 +13,12 @@ import android.content.res.Configuration;
 import android.os.IBinder;
 import android.os.RemoteException;
 
+/**
+ * SensorService is the main service of the application. It holds
+ * a number of logging services and their statuses and a list of 
+ * logging listeners. It provides an interface for logging services
+ * and logging listeners to subscribe/unsubscribe. 
+ */
 public class SensorService 
 extends Service 
 {
@@ -35,15 +41,9 @@ extends Service
         loggingServices.add(new LoggingServiceDescriptor("Telephony", "Telephony", TelephonyLoggingService.class));
     }
 
-    // location service
-    private LocationService locationService = new LocationService();
-
     // logging listeners
     private List<LoggingListenerService> loggingListeners = new ArrayList<LoggingListenerService>();
 
-    // file system logging listener service
-    private FileSystemLoggingListenerService fsLoggingListener = new FileSystemLoggingListenerService();
-    
     private Map<LoggingServiceDescriptor, Boolean> loggingServicesStatuses
             = new HashMap<LoggingServiceDescriptor, Boolean>();
     {
@@ -51,6 +51,9 @@ extends Service
             loggingServicesStatuses.put(desc, new Boolean(false));
     }
     
+    /**
+     * Called by the system when the device configuration changes.
+     */
     @Override
     public void onConfigurationChanged(Configuration newConfig) 
     {
@@ -58,20 +61,22 @@ extends Service
         logger.verbose("SensorService.onConfigurationChanged()");
     }
 
+    /**
+     * Called by the system when the service is created. It starts
+     * the location service and the file system logging listener. 
+     */
     @Override
     public void onCreate() 
     {
         super.onCreate();
-        
-        // start location service
-        // TODO: should be on if at least one of the sensors is on?
-        startService(new Intent(this, LocationService.class));
-        
-        startService(new Intent(this, FileSystemLoggingListenerService.class));
-        
         logger.verbose("SensorService.onCreate()");
     }
 
+    /**
+     * Called by the system when the service is destroyed. It stops
+     * all the logging services, the location service and the file
+     * system logging listener service.
+     */
     @Override
     public void onDestroy() 
     {
@@ -81,13 +86,13 @@ extends Service
         for(LoggingServiceDescriptor desc : loggingServices)
             stopService(desc.getIntent(this));
 
-        // stop location service
-        locationService.stopSelf();
-        
-        // stop file system logging listener service
-        fsLoggingListener.stopSelf();        
+        stopService(new Intent(getBaseContext(), LocationService.class));
+        stopService(new Intent(getBaseContext(), FileSystemLoggingListenerService.class));
     }
 
+    /**
+     * Called when the overall system is running low on memory.
+     */
     @Override
     public void onLowMemory() 
     {
@@ -95,6 +100,10 @@ extends Service
         logger.verbose("SensorService.onLowMemory()");
     }
 
+    /**
+     * Called when new clients have connected to the service, after it had previously 
+     * been notified that all had disconnected.
+     */
     @Override
     public void onRebind(Intent intent) 
     {
@@ -102,6 +111,9 @@ extends Service
         logger.verbose("SensorService.onRebind()");
     }
 
+    /**
+     * Called by the system when the service is started.
+     */
     @Override
     public void onStart(Intent intent, int startId) 
     {
@@ -109,6 +121,10 @@ extends Service
         logger.verbose("SensorService.onStart()");
     }
 
+    /**
+     * Called by the system when all clients have disconnected from a particular
+     * interface published by the service.
+     */
     @Override
     public boolean onUnbind(Intent intent) 
     {
@@ -116,6 +132,9 @@ extends Service
         return super.onUnbind(intent);
     }
 
+    /**
+     * Returns the communication channel to the service.
+     */
     @Override
     public IBinder onBind(Intent intent) 
     {
@@ -130,21 +149,35 @@ extends Service
             return new SensorServiceLoggerStub();
         return null;
     }
-        
+    
+    /**
+     * Class that implements the functionality required by the SensorServiceLogger 
+     * interface defined in SensorServiceLogger.aidl.
+     */
     private class SensorServiceLoggerStub 
     extends SensorServiceLogger.Stub
     {
+        /**
+         * Sends a LogEntry to the log() method of all the logging listeners.
+         */
         @Override
         public void log(long timestamp, String identifier, String dataBlob) 
         throws RemoteException 
-        {           
-            LogEntry entry = new LogEntry(timestamp, identifier, locationService.getLocation(), dataBlob);
-            
-            for (LoggingListenerService listener : loggingListeners) {
-                listener.log(entry);
+        {
+            if (Preferences.Helper.isLoggingOn(getBaseContext())) {
+                LogEntry entry = new LogEntry(timestamp, identifier, LocationService.getLocation(), dataBlob);
+
+                for (LoggingListenerService listener : loggingListeners) {
+                    listener.log(entry);
+                }
             }
         }
 
+        /**
+         * Called by a logging listener that wants to subscribe to the logging.
+         * The listener is added to the list of listeners and is notified for 
+         * any new log entry.
+         */
         @Override
         public void registerListener(LoggingListenerService listener)
         throws RemoteException {
@@ -153,9 +186,16 @@ extends Service
         }
     }
     
+    /**
+     * Class that implements the functionality required by the SensorServiceControl 
+     * interface defined in SensorServiceControl.aidl.
+     */
     public class SensorServiceControlStub
     extends SensorServiceControl.Stub
     {
+        /**
+         * Returns the list of loggers.
+         */
         @Override
         public List<LoggingServiceDescriptor> getLoggers()
         throws RemoteException 
@@ -163,6 +203,9 @@ extends Service
             return loggingServices;
         }
 
+        /**
+         * Starts a specific logger given by a descriptor.
+         */
         @Override
         public void startLogger(LoggingServiceDescriptor descriptor)
         throws RemoteException 
@@ -171,6 +214,9 @@ extends Service
             loggingServicesStatuses.put(descriptor, Boolean.TRUE);
         }
 
+        /**
+         * Stops a specific logger given by a descriptor.
+         */
         @Override
         public void stopLogger(LoggingServiceDescriptor descriptor)
         throws RemoteException 
@@ -179,11 +225,36 @@ extends Service
             loggingServicesStatuses.put(descriptor, Boolean.FALSE);
         }
 
+        /**
+         * Returns the status of a specific logger given by a descriptor.
+         */
         @Override
         public boolean getLoggerStatus(LoggingServiceDescriptor descriptor)
         throws RemoteException 
         {
             return loggingServicesStatuses.get(descriptor).booleanValue();
+        }
+
+        /**
+         * Starts the logging.
+         */
+        @Override
+        public void startLogging() 
+        throws RemoteException {
+            logger.verbose("SensorServiceControlStub.startLogging()");
+            startService(new Intent(getBaseContext(), LocationService.class));
+            startService(new Intent(getBaseContext(), FileSystemLoggingListenerService.class));
+        }
+
+        /**
+         * Stops the logging.
+         */
+        @Override
+        public void stopLogging() 
+        throws RemoteException {
+            logger.verbose("SensorServiceControlStub.stopLogging()");
+            stopService(new Intent(getBaseContext(), LocationService.class));
+            startService(new Intent(getBaseContext(), FileSystemLoggingListenerService.class));
         }
     }
 }

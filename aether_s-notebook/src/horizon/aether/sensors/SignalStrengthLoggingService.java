@@ -7,6 +7,9 @@ import android.os.Looper;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 
+/**
+ * Manages the logging of signal strength data.
+ */
 public class SignalStrengthLoggingService
 extends SensorLoggingService
 {

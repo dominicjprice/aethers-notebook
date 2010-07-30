@@ -9,6 +9,13 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.os.RemoteException;
 
+/**
+ * Service to be extended by potential logging listeners. Child classes should
+ * override the log() method to manipulate the LogEntries as they wish.
+ * 
+ * The class also implements Parcelable so that LoggingListenerService objects 
+ * can be send from one process to another through an AIDL interface.
+ */
 public class LoggingListenerService
 extends Service 
 implements Parcelable
@@ -17,27 +24,34 @@ implements Parcelable
     
     public LoggingListenerService() { }
     
-    public void log(LogEntry entry) { 
-        // child classes need to override this  
-    }
+    /**
+     * Method to be implemented by child classes to handle
+     * the LogEntries.
+     * @param entry: Log entry.
+     */
+    public void log(LogEntry entry) { }
 
+    /**
+     * Called by the system when clients want to bind to the service.
+     */
     @Override
     public IBinder onBind(Intent intent) {
         return null;
     }
     
+    /**
+     * Called by the system when the service is created.
+     */
     @Override
     public void onCreate() { 
         super.onCreate();
     }
     
-    @Override
-    public String toString() {
-        return "LoggingListenerService";
-    }
-
     private LoggingListenerService(Parcel in) { }
     
+    /**
+     * Flattens this object in to a Parcel.
+     */
     @Override
     public void writeToParcel(Parcel dest, int flags) { }
     
@@ -52,11 +66,18 @@ implements Parcelable
             }
         };
     
-    @Override
-    public int describeContents() {
-        return 0;
-    }
+        /**
+         * Describes the kinds of special objects contained in this Parcelable's 
+         * marshalled representation.
+         */
+        @Override
+        public int describeContents() {
+            return 0;
+        }
     
+    /**
+     * Service connection for registering to the list of listeners. 
+     */
     protected class LoggingListenerServiceConnection implements ServiceConnection {
         private LoggingListenerService loggingService;
         
@@ -64,11 +85,13 @@ implements Parcelable
             this.loggingService = loggingService;
         }
         
+        /**
+         * When the service has connected, the listener is registered to the logging service. 
+         */
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) { 
             dataLogger = (SensorServiceLogger)service;
 
-            // register
             try {
                 dataLogger.registerListener(loggingService);
             } catch (RemoteException e) {

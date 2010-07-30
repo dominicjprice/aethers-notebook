@@ -7,6 +7,9 @@ import android.os.Looper;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 
+/**
+ * Manages the logging of the state of the data connection.
+ */
 public class DataConnectionStateLoggingService
 extends SensorLoggingService
 {
