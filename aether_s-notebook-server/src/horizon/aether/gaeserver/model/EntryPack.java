@@ -11,14 +11,14 @@ public class EntryPack {
     
     private List<Entry> entries;
     
-    private List<Blob> blobs;
+    private List<IBlob> blobs;
     
     /**
      * Constructor.
      * @param entries
      * @param blobs
      */
-    public EntryPack(List<Entry> entries, List<Blob> blobs) {
+    public EntryPack(List<Entry> entries, List<IBlob> blobs) {
         this.entries = entries;
         this.blobs = blobs;
     }
@@ -28,7 +28,7 @@ public class EntryPack {
      */
     public EntryPack() {
         this.entries = new ArrayList<Entry>();
-        this.blobs = new ArrayList<Blob>();
+        this.blobs = new ArrayList<IBlob>();
     }
     
     /**
@@ -36,7 +36,7 @@ public class EntryPack {
      * @param entry
      * @param blob
      */
-    public void add(Entry entry, Blob blob) {
+    public void add(Entry entry, IBlob blob) {
         entries.add(entry);
         blobs.add(blob);
     }
@@ -53,7 +53,7 @@ public class EntryPack {
      * Gets the blobs.
      * @return The blobs.
      */
-    public List<Blob> getBlobs() {
+    public List<IBlob> getBlobs() {
         return this.blobs;
     }
 }

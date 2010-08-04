@@ -9,22 +9,26 @@ package horizon.aether.gaeserver.model;
 
 import java.util.ArrayList;
 
+import javax.jdo.annotations.IdGeneratorStrategy;
 import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
+import javax.jdo.annotations.PrimaryKey;
 
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
-import com.google.appengine.repackaged.org.json.JSONException;
-import com.google.appengine.repackaged.org.json.JSONStringer;
 
 @PersistenceCapable
-public class TelephonyStateBlob extends Blob {
+public class TelephonyStateBlob implements IBlob {
 
     public static final String NETWORK_TYPE_EDGE = "NETWORK_TYPE_EDGE";
     public static final String NETWORK_TYPE_GPRS = "NETWORK_TYPE_GPRS";
     public static final String NETWORK_TYPE_UMTS = "NETWORK_TYPE_UMTS";
     public static final String NETWORK_TYPE_UNKNOWN = "NETWORK_TYPE_UNKNOWN";
     
+    @PrimaryKey
+    @Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY)
+    Key key;
+
     @Persistent
     private ArrayList<NeighbouringCell> neighbouringCells;
     
@@ -69,15 +73,7 @@ public class TelephonyStateBlob extends Blob {
      * Default constructor.
      */
     public TelephonyStateBlob() { }
-    
-    /**
-     * Creates the blob's key.
-     */
-    @Override
-    protected Key createKey() {
-        return KeyFactory.createKey(TelephonyStateBlob.class.getSimpleName(), this.toString());
-    }    
-    
+        
     /**
      * Returns a string representation of the object.
      */
@@ -95,36 +91,65 @@ public class TelephonyStateBlob extends Blob {
         
         return sb.toString();
     }
-    
+
     /**
-     * Returns a JSON string representation of the object.
-     * @return A JSON string.
+     * Creates the key.
      */
     @Override
-    public String toJSONString() {
-        JSONStringer data = new JSONStringer();
-        try
-        {
-            data.object();
-            data.key("neighbouringCells");
-            data.array();
-            for (NeighbouringCell info : this.neighbouringCells) {
-                data.object();
-                data.key("cid");
-                data.value(info.getCid());
-                data.key("rssi");
-                data.value(info.getRssi());
-                data.endObject();
-            }
-            data.endArray();
-            data.key("networkType");
-            data.value(this.networkType);
-            data.endObject();
-        }
-        catch(JSONException e) {
-            throw new RuntimeException(e);
-        }
-        
-        return data.toString();
+    public void createKey() {
+        this.key = KeyFactory.createKey(TelephonyStateBlob.class.getSimpleName(), this.hashCode());
     }
+
+    /**
+     * Gets the key.
+     */
+    @Override
+    public Key getKey() {
+        if (this.key == null)
+            createKey();
+        
+        return this.key;
+    }
+
+    /* (non-Javadoc)
+     * @see java.lang.Object#hashCode()
+     */
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime
+                * result
+                + ((neighbouringCells == null) ? 0 : neighbouringCells
+                        .hashCode());
+        result = prime * result
+                + ((networkType == null) ? 0 : networkType.hashCode());
+        return result;
+    }
+
+    /* (non-Javadoc)
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (!(obj instanceof TelephonyStateBlob))
+            return false;
+        TelephonyStateBlob other = (TelephonyStateBlob) obj;
+        if (neighbouringCells == null) {
+            if (other.neighbouringCells != null)
+                return false;
+        } else if (!neighbouringCells.equals(other.neighbouringCells))
+            return false;
+        if (networkType == null) {
+            if (other.networkType != null)
+                return false;
+        } else if (!networkType.equals(other.networkType))
+            return false;
+        return true;
+    }
+    
 }

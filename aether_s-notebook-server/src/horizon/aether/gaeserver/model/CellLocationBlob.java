@@ -1,15 +1,19 @@
 package horizon.aether.gaeserver.model;
 
+import javax.jdo.annotations.IdGeneratorStrategy;
 import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
+import javax.jdo.annotations.PrimaryKey;
 
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
-import com.google.appengine.repackaged.org.json.JSONException;
-import com.google.appengine.repackaged.org.json.JSONStringer;
 
 @PersistenceCapable
-public class CellLocationBlob extends Blob {
+public class CellLocationBlob implements IBlob {
+
+    @PrimaryKey
+    @Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY)
+    Key key;
 
     @Persistent
     private int cid;
@@ -55,32 +59,54 @@ public class CellLocationBlob extends Blob {
      * Default constructor.
      */
     public CellLocationBlob() { }
-    
+
     /**
-     * Creates the blob's key.
+     * Creates the key.
      */
     @Override
-    protected Key createKey() {
-        return KeyFactory.createKey(CellLocationBlob.class.getSimpleName(), this.cid + "" + this.lac);
+    public void createKey() {
+        this.key = KeyFactory.createKey(CellLocationBlob.class.getSimpleName(), this.hashCode());
     }
 
     /**
-     * Returns the JSON string representation of the object.
+     * Gets the key.
      */
     @Override
-    protected String toJSONString() {
-        JSONStringer data = new JSONStringer();
-        try 
-        {
-            data.object();
-            data.key("cid");
-            data.value(this.getCid());
-            data.key("lac");
-            data.value(this.getLac());
-            data.endObject();
-        }
-        catch (JSONException e) { }
+    public Key getKey() {
+        if (this.key == null)
+            createKey();
         
-        return data.toString();
+        return this.key;
+    }
+
+    /* (non-Javadoc)
+     * @see java.lang.Object#hashCode()
+     */
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + cid;
+        result = prime * result + lac;
+        return result;
+    }
+
+    /* (non-Javadoc)
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (!(obj instanceof CellLocationBlob))
+            return false;
+        CellLocationBlob other = (CellLocationBlob) obj;
+        if (cid != other.cid)
+            return false;
+        if (lac != other.lac)
+            return false;
+        return true;
     }
 }

@@ -6,19 +6,27 @@ package horizon.aether.gaeserver.model;
  */
 import java.util.ArrayList;
 
+import javax.jdo.annotations.IdGeneratorStrategy;
 import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
+import javax.jdo.annotations.PrimaryKey;
 
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
-import com.google.appengine.repackaged.org.json.JSONException;
-import com.google.appengine.repackaged.org.json.JSONStringer;
 
 @PersistenceCapable
-public class WifiBlob extends Blob {
+public class WifiBlob implements IBlob {
+
+    @PrimaryKey
+    @Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY)
+    Key key;
 
     @Persistent
     ArrayList<Wifi> networks;
+    
+    public ArrayList<Wifi> getNetworks() { return this.networks; }
+    
+    public void setNetworks(ArrayList<Wifi> networks) { this.networks = networks; }
     
     /**
      * Constructor.
@@ -34,43 +42,56 @@ public class WifiBlob extends Blob {
     public WifiBlob() { 
         this.networks = new ArrayList<Wifi>();
     }
-    
+
     /**
-     * Creates the blob's key.
+     * Creates the key.
      */
     @Override
-    protected Key createKey() {
-        // TODO: must to be unique
-        return KeyFactory.createKey(WifiBlob.class.getSimpleName(), networks.toString());
+    public void createKey() {
+        this.key = KeyFactory.createKey(WifiBlob.class.getSimpleName(), this.hashCode());
     }
 
     /**
-     * Returns the JSON string representation of the object.
+     * Gets the key.
      */
     @Override
-    protected String toJSONString() {
-        JSONStringer data = new JSONStringer();
-        try {
-            data.array();
-            for (Wifi wf : this.networks) {
-                data.object();
-                data.key("bssid");
-                data.value(wf.getBSSID());
-                data.key("ssid");
-                data.value(wf.getSSID());
-                data.key("capabilities");
-                data.value(wf.getCapabilities());
-                data.key("frequency");
-                data.value(wf.getFrequency());
-                data.key("level");
-                data.value(wf.getLevel());
-                data.endObject();
-            }
-
-            data.endArray();
-        } 
-        catch (JSONException e) { }
-
-        return data.toString();
+    public Key getKey() {
+        if (this.key == null)
+            createKey();
+        
+        return this.key;
     }
+
+    /* (non-Javadoc)
+     * @see java.lang.Object#hashCode()
+     */
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result
+                + ((networks == null) ? 0 : networks.hashCode());
+        return result;
+    }
+
+    /* (non-Javadoc)
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (!(obj instanceof WifiBlob))
+            return false;
+        WifiBlob other = (WifiBlob) obj;
+        if (networks == null) {
+            if (other.networks != null)
+                return false;
+        } else if (!networks.equals(other.networks))
+            return false;
+        return true;
+    }
+        
 }

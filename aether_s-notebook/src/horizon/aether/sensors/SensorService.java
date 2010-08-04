@@ -1,5 +1,6 @@
 package horizon.aether.sensors;
 
+import horizon.aether.utilities.PrefsUtils;
 import horizon.android.logging.Logger;
 
 import java.util.ArrayList;
@@ -119,6 +120,20 @@ extends Service
     {
         super.onStart(intent, startId);
         logger.verbose("SensorService.onStart()");
+        
+        // start the loggers from configuration
+        for (final LoggingServiceDescriptor desc: this.loggingServices) {
+          if (PrefsUtils.getLoggerStatus(this, desc.name)) {
+              startService(desc.getIntent(SensorService.this));
+              loggingServicesStatuses.put(desc, Boolean.TRUE);
+          }
+        }
+      
+        // also initialise logging (if it was on by configuration)
+        if (PrefsUtils.getLoggingStatus(this)) {
+            startService(new Intent(getBaseContext(), LocationService.class));
+            startService(new Intent(getBaseContext(), FileSystemLoggingListenerService.class));
+        }
     }
 
     /**
@@ -164,7 +179,7 @@ extends Service
         public void log(long timestamp, String identifier, String dataBlob) 
         throws RemoteException 
         {
-            if (Preferences.Helper.isLoggingOn(getBaseContext())) {
+            if (PrefsUtils.getLoggingStatus(getBaseContext())) {
                 LogEntry entry = new LogEntry(timestamp, identifier, LocationService.getLocation(), dataBlob);
 
                 for (LoggingListenerService listener : loggingListeners) {

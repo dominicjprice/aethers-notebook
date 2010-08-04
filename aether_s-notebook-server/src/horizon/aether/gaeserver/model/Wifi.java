@@ -9,14 +9,12 @@ package horizon.aether.gaeserver.model;
  *    - frequency (int)
  *    - level (int)
  */
-
 import javax.jdo.annotations.IdGeneratorStrategy;
 import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
 import javax.jdo.annotations.PrimaryKey;
 
 import com.google.appengine.api.datastore.Key;
-import com.google.appengine.api.datastore.KeyFactory;
 
 @PersistenceCapable
 public class Wifi  {
@@ -44,13 +42,7 @@ public class Wifi  {
      * Gets the key.
      * @return The key.
      */
-    public Key getKey() {
-        if (this.key == null) {
-            this.key = createKey();
-        }
-
-        return this.key;
-    }
+    public Key getKey() { return this.key; }
 
     /**
      * Gets the BSSID.
@@ -132,7 +124,6 @@ public class Wifi  {
         this.capabilities = capabilities;
         this.frequency = frequency;
         this.level = level;
-        this.key = createKey();
     }
     
     /**
@@ -156,8 +147,5 @@ public class Wifi  {
         
         return sb.toString();
     }
-    
-    private Key createKey() {
-        return KeyFactory.createKey(Wifi.class.getSimpleName(), this.toString());
-    }    
+   
 }

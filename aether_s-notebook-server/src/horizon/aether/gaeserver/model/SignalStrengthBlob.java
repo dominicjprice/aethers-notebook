@@ -1,16 +1,20 @@
 package horizon.aether.gaeserver.model;
 
 
+import javax.jdo.annotations.IdGeneratorStrategy;
 import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
+import javax.jdo.annotations.PrimaryKey;
 
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
-import com.google.appengine.repackaged.org.json.JSONException;
-import com.google.appengine.repackaged.org.json.JSONStringer;
 
 @PersistenceCapable
-public class SignalStrengthBlob extends Blob {
+public class SignalStrengthBlob implements IBlob {
+
+    @PrimaryKey
+    @Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY)
+    Key key;
 
     @Persistent
     private int strength;
@@ -39,30 +43,52 @@ public class SignalStrengthBlob extends Blob {
      * Default constructor.
      */
     public SignalStrengthBlob() { }
-    
+
     /**
-     * Creates the blob's key.
+     * Creates the key.
      */
-    public Key createKey() {
-        return KeyFactory.createKey(SignalStrengthBlob.class.getSimpleName(), ""+strength);
+    @Override
+    public void createKey() {
+        this.key = KeyFactory.createKey(SignalStrengthBlob.class.getSimpleName(), this.hashCode());
     }
 
     /**
-     * Returns a string representation of the object
+     * Gets the key.
      */
     @Override
-    protected String toJSONString() {
-        JSONStringer data = new JSONStringer();
-        try {
-            data.object();
-            data.key("strength");
-            data.value(this.strength);
-            data.endObject();
-        }
-        catch (JSONException e) {
-            throw new RuntimeException(e);
-        }
+    public Key getKey() {
+        if (this.key == null)
+            createKey();
         
-        return data.toString();
+        return this.key;
     }
+
+    /* (non-Javadoc)
+     * @see java.lang.Object#hashCode()
+     */
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + strength;
+        return result;
+    }
+
+    /* (non-Javadoc)
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (!(obj instanceof SignalStrengthBlob))
+            return false;
+        SignalStrengthBlob other = (SignalStrengthBlob) obj;
+        if (strength != other.strength)
+            return false;
+        return true;
+    }
+    
 }

@@ -1,13 +1,19 @@
-package horizon.aether.sensors;
+package horizon.aether.ui;
 
 import horizon.aether.R;
+import horizon.aether.sensors.AppHelper;
+import horizon.aether.sensors.LockManager;
+import horizon.aether.sensors.LoggingServiceDescriptor;
+import horizon.aether.sensors.SensorService;
+import horizon.aether.sensors.SensorServiceControl;
+import horizon.aether.sensors.UploadingService;
 import horizon.aether.utilities.FileUtils;
+import horizon.aether.utilities.PrefsUtils;
 import horizon.android.logging.Logger;
 
 import java.io.File;
 
 import android.content.ComponentName;
-import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Bundle;
@@ -18,8 +24,9 @@ import android.preference.EditTextPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceCategory;
-import android.preference.PreferenceManager;
 import android.preference.Preference.OnPreferenceChangeListener;
+import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.Toast;
 
 /**
@@ -30,8 +37,7 @@ import android.widget.Toast;
  *    - Set maximum total capacity used by the log files
  *    - Set strategy to be followed in case the maximum total capacity has been reached. 
  *
- * An inner class (Helper) provides some helper methods to access these preferences
- * easily from anywhere in the application.
+ * A button is also provided to upload the archives to the server.
  */
 public class Preferences extends PreferenceActivity {
 
@@ -54,15 +60,17 @@ public class Preferences extends PreferenceActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        addPreferencesFromResource(R.xml.preferences);
         logger.verbose("Preferences.onCreate()");
+        addPreferencesFromResource(R.xml.preferences);
         
-        // sensor services
+        setupUploadButtonPref();
         setupLoggingPref();
         setupSensorsPref();        
         setupLogsDirPref();
         setupMaxFileSizePref();
         setupMaxTotalCapacityPref();
+        
+        AppHelper.initialize(this);
     }
 
     /**
@@ -72,16 +80,29 @@ public class Preferences extends PreferenceActivity {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        logger.verbose("Preferences.onDestroy()");
         unbindService(sensorsServiceConnection);
-        unbindService(toggleLoggingServiceConnection);
+        try {
+            unbindService(toggleLoggingServiceConnection);
+        }
+        catch (IllegalArgumentException e) {}
     }
-    
+
     private void setupSensorsPref() {
-        sensorsCategory = (PreferenceCategory)findPreference(getString(R.string.Preferences_sensors));
-        
         Intent serviceIntent = new Intent(this, SensorService.class);
         serviceIntent.setAction(SensorService.SENSOR_SERVICE_CONTROL_ACTION);
         bindService(serviceIntent, sensorsServiceConnection, 0);
+    }
+
+    private void setupUploadButtonPref() {
+        ButtonPreference cmdUpload = (ButtonPreference)findPreference("cmdUpload");        
+        cmdUpload.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent uploadIntent = new Intent(getBaseContext(), UploadingService.class);
+                startService(uploadIntent);
+            }
+        });
     }
 
     private void setupLoggingPref() {
@@ -114,8 +135,8 @@ public class Preferences extends PreferenceActivity {
                 }
                 
                 // move old file to new directory
-                File oldFile = new File(Helper.getLogFilePath(getBaseContext()));
-                File newFile = new File(Helper.getLogFilePath(newPath));
+                File oldFile = new File(PrefsUtils.getLogFilePath(getBaseContext()));
+                File newFile = new File(PrefsUtils.getLogFilePath(newPath));
 
                 synchronized(LockManager.logFileLock) {
                     if (oldFile.exists()) {
@@ -124,8 +145,8 @@ public class Preferences extends PreferenceActivity {
                 }
                     
                 // move archives directory
-                File oldArchivesDir = new File(Helper.getArchivesDir(getBaseContext()));
-                File newArchivesDir = new File(Helper.getArchivesDir(newPath));
+                File oldArchivesDir = new File(PrefsUtils.getArchivesDir(getBaseContext()));
+                File newArchivesDir = new File(PrefsUtils.getArchivesDir(newPath));
                 synchronized (LockManager.logArchivesDirLock) {
                     if (oldArchivesDir.exists()) {
                         oldArchivesDir.renameTo(newArchivesDir);
@@ -184,13 +205,12 @@ public class Preferences extends PreferenceActivity {
     private ServiceConnection sensorsServiceConnection = new ServiceConnection() {
         @Override
         public void onServiceDisconnected(ComponentName name) {
-            logger.verbose("Preferences.ServiceConnection.onServiceDisconnected()");
             sensorsServiceConnection = null;
         }
         
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
-            logger.verbose("Preferences.ServiceConnection.onServiceConnected()");
+            sensorsCategory = (PreferenceCategory)findPreference(getString(R.string.Preferences_sensors));
             final SensorServiceControl control = (SensorServiceControl)service;
 
             try {
@@ -228,116 +248,28 @@ public class Preferences extends PreferenceActivity {
     
     private ServiceConnection toggleLoggingServiceConnection = new ServiceConnection() {
         @Override
+        public void onServiceDisconnected(ComponentName name) { 
+            toggleLoggingServiceConnection = null;
+        }
+        
+        @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
+            logger.warn("toggleLoggingServiceConnection.onServiceConnected()");
+            
             final SensorServiceControl control = (SensorServiceControl)service;
             try {
-                if (isLoggingOn)
+                if (isLoggingOn) {
                     control.startLogging();
-                else
+                }
+                else {
                     control.stopLogging();
+                }
             } 
             catch (RemoteException e) {
                 throw new RuntimeException(e);
             }
         }
-
-        @Override
-        public void onServiceDisconnected(ComponentName name) {}
     };
     
-    /**
-     * Inner class to provide static methods for easy access if the user preferences
-     * from anywhere in the code.
-     */
-    public static class Helper {
-        
-        /**
-         * Returns a boolean static whether the logging is switched on or off.
-         * @param context
-         * @return The logging status (on/off).
-         */
-        public static boolean isLoggingOn(Context context) {
-            return PreferenceManager.getDefaultSharedPreferences(context)
-                        .getBoolean(context.getString(R.string.Preferences_loggingOn), true);
-        }
-        
-        /**
-         * Gets the logs directory path.
-         * @param context
-         * @return The absolute path of the logs directory.
-         */
-        public static String getLogsDirPath(Context context) {
-            return PreferenceManager.getDefaultSharedPreferences(context)
-                    .getString(context.getString(R.string.Preferences_logsDir), "/sdcard/aether/");
-        }
-
-        /**
-         * Gets the log file path. 
-         * @param context
-         * @return The absolute path of the log file.
-         */
-        public static String getLogFilePath(Context context) {
-            return getLogFilePath(getLogsDirPath(context)); 
-        }
-        
-        /**
-         * Gets the log file path given the directory
-         * @param dir
-         * @return The log file path.
-         */
-        public static String getLogFilePath(String dir) {
-            return FileUtils.fixDirPath(dir) + "sensorservice.log";
-        }
-        
-        /**
-         * Gets the maximum file size.
-         * @param context
-         * @return The maximum file size (in bytes).
-         */
-        public static long getMaxFileSize(Context context) {
-            String s = PreferenceManager.getDefaultSharedPreferences(context)
-                            .getString(context.getString(R.string.Preferences_maxFileSize), "10");
-            return (long)(Integer.parseInt(s) * 1024 * 1024);
-        }
-        
-        /**
-         * Gets the maximum total capacity of the log files.
-         * @param context
-         * @return The maximum total capacity (in bytes).
-         */
-        public static long getMaxTotalCapacity(Context context) {
-            String s = PreferenceManager.getDefaultSharedPreferences(context)
-                            .getString(context.getString(R.string.Preferences_maxTotalCapacity), "100");
-            
-            return (long)(Integer.parseInt(s) * 1024 * 1024);
-        }
-
-        /**
-         * Gets the archives directory path.
-         * @param context
-         * @return The archives directory path.
-         */
-        public static String getArchivesDir(Context context) {
-            return getArchivesDir(getLogsDirPath(context));
-        }
-        
-        /**
-         * Gets the archives directory path given the logs directory path.
-         * @param dir
-         * @return The archives directory path.
-         */
-        public static String getArchivesDir(String dir) {
-            return FileUtils.fixDirPath(dir) + "archives/";
-        }
-        
-        /**
-         * Gets the storage cleanup strategy.
-         * @param context
-         * @return The number of the storage cleanup strategy.
-         */
-        public static int getStorageCleanupStrategy(Context context) {
-            return Integer.parseInt(PreferenceManager.getDefaultSharedPreferences(context)
-                        .getString(context.getString(R.string.Preferences_storageCleanupStrategy), "0"));
-        }
-   }
 }
+

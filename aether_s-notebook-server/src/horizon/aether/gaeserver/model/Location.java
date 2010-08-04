@@ -6,9 +6,6 @@ import javax.jdo.annotations.Persistent;
 import javax.jdo.annotations.PrimaryKey;
 
 import com.google.appengine.api.datastore.Key;
-import com.google.appengine.api.datastore.KeyFactory;
-import com.google.appengine.repackaged.org.json.JSONException;
-import com.google.appengine.repackaged.org.json.JSONStringer;
 
 /**
  * Class that represents a location. A Location object is described
@@ -22,7 +19,6 @@ import com.google.appengine.repackaged.org.json.JSONStringer;
  *   - speed (float)
  *   - extras (String)
  */
-
 @PersistenceCapable
 public class Location {
 
@@ -59,11 +55,6 @@ public class Location {
      * @return The key.
      */
     public Key getKey() {
-        if (this.key == null) {
-            this.key = createKey();
-            
-        }
-
         return this.key;
     }
     
@@ -177,7 +168,6 @@ public class Location {
         this.provider = provider;
         this.speed = speed;
         this.extras = extras;
-        this.key = createKey();
     }
     
     /**
@@ -204,66 +194,5 @@ public class Location {
         sb.append("_");
         sb.append(extras);
         return sb.toString();
-    }
-
-    /**
-     * Returns a JSON string representation of the object.
-     * @return a JSON string.
-     */
-    public String toJSONString() {
-        JSONStringer data = new JSONStringer();
-        try
-        {
-            data.object();
-            data.key("accuracy");
-            if (accuracy != 0)
-                data.value(accuracy);
-            else 
-                data.value(null);
-            
-            data.key("altitude");
-            if(altitude != 0)
-                data.value(getAltitude());
-            else
-                data.value(null);
-            
-            data.key("bearing");
-            if(bearing != 0)
-                data.value(bearing);
-            else
-                data.value(null);
-            
-            data.key("latitude");
-            data.value(latitude);
-            
-            data.key("longitude");
-            data.value(longitude);
-            
-            data.key("provider");
-            data.value(provider);
-            
-            data.key("speed");
-            if(speed != 0)
-                data.value(speed);
-            else
-                data.value(null);
-            
-            data.key("extras");
-            if(extras != null)
-                data.value(extras.toString());
-            else
-                data.value(null);
-                    
-            data.endObject();
-        }
-        catch(JSONException e) {
-            e.printStackTrace();
-        }
-
-        return data.toString();
-    }
-    
-    private Key createKey() {
-        return KeyFactory.createKey(Location.class.getSimpleName(), this.toString());
     }
 }

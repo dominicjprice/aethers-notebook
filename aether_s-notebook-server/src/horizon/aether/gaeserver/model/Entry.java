@@ -6,8 +6,6 @@ import javax.jdo.annotations.Persistent;
 import javax.jdo.annotations.PrimaryKey;
 
 import com.google.appengine.api.datastore.Key;
-import com.google.appengine.repackaged.org.json.JSONException;
-import com.google.appengine.repackaged.org.json.JSONStringer;
 
 /**
  * Represents a logging entry. A logging entry has the following fields:
@@ -19,24 +17,30 @@ import com.google.appengine.repackaged.org.json.JSONStringer;
  * The datablob is represented by a key object instead of a Blob object because 
  * the App Engine does not support polymorphic relationships.  
  */
-
 @PersistenceCapable
 public class Entry {
 
+    public static final String CELL_LOCATION_BLOB = "CELL_LOCATION";
+    public static final String DATA_CONNECTION_STATE_BLOB = "DATA_CONNECTION_STATE";
+    public static final String SERVICE_STATE_BLOB = "SERVICE_STATE";
+    public static final String SIGNAL_STRENGTH_BLOB = "SIGNAL_STRENGTH";
+    public static final String TELEPHONY_STATE_BLOB = "TELEPHONY_STATE";
+    public static final String AP_SITINGS_BLOB = "AP_SITINGS";
+    
     @PrimaryKey
     @Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY)
     private Key key;
 
-    @Persistent(dependent="true")
+    @Persistent
     private long timestamp;
     
-    @Persistent(dependent="true")
+    @Persistent
     private String identifier;
     
-    @Persistent(dependent="true")
+    @Persistent
     private Location location;
        
-    @Persistent(dependent="true")
+    @Persistent
     private Key dataBlob;
     
     /**
@@ -98,28 +102,5 @@ public class Entry {
         sb.append(this.dataBlob.toString());
         return sb.toString();
     }
-    
-    /**
-     * Returns a JSON string representation of the object.
-     */
-    public String toJSONString() {
-        JSONStringer data = new JSONStringer();
-        try {
-            data.object();
-            data.key("timestamp");
-            data.value(timestamp);
-            data.key("identifier");
-            data.value(identifier);
-            data.key("location");
-            data.value(location);
-            data.key("dataBlob");
-            data.value(dataBlob);
-            data.endObject();
-        }
-        catch (JSONException e) {
-            e.printStackTrace();
-        }
-        
-        return data.toString();
-    }
+
 }

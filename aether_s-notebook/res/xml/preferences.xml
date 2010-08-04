@@ -1,7 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"> 
-
+	
+	<horizon.aether.ui.ButtonPreference
+		android:key="@string/Preferences_cmdUpload"
+		android:title="Upload archives now" />
+	
+	<CheckBoxPreference
+		android:key="@string/Preferences_startOnBootFlag"
+		android:title="Start on boot"
+		android:summary="Select whether you want the sensors to start when booting the phone"
+		android:defaultValue="false" />
+		
 	<CheckBoxPreference
 		android:key="@string/Preferences_loggingOn"
 		android:title="Logging"

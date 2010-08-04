@@ -1,8 +1,12 @@
 package horizon.aether.gaeserver.model;
 
 import javax.jdo.annotations.EmbeddedOnly;
+import javax.jdo.annotations.IdGeneratorStrategy;
 import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
+import javax.jdo.annotations.PrimaryKey;
+
+import com.google.appengine.api.datastore.Key;
 
 /**
  * Represents a neighbouring cell (used in Telephony blobs).
@@ -13,12 +17,23 @@ import javax.jdo.annotations.Persistent;
 @PersistenceCapable
 @EmbeddedOnly
 public class NeighbouringCell {
+
+    @PrimaryKey
+    @Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY)
+    protected Key key;
+    
     @Persistent
     private int cid;
     
     @Persistent
     private int rssi;
     
+    /**
+     * Gets the key.
+     * @return The key.
+     */
+    public Key getKey() { return this.key; }
+
     /**
      * Gets the cid.
      * @return The cid.
@@ -31,6 +46,12 @@ public class NeighbouringCell {
      */
     public int getRssi() { return this.rssi; }
     
+    /**
+     * Sets the key.
+     * @param key
+     */
+    public void setKey(Key key) { this.key = key; }    
+
     /**
      * Sets the cid.
      * @param cid

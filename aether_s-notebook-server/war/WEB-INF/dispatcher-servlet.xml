@@ -15,9 +15,9 @@
 	</bean>
 	  
 	<!-- Page Controller -->
-	<bean class="horizon.aether.webapp.controller.PageController" />
+	<bean class="horizon.aether.gaeserver.controller.PageController" />
 	 
 	<!-- Crowd Controller -->
-	<bean class="horizon.aether.webapp.controller.CrowdController" />
+	<bean class="horizon.aether.gaeserver.controller.CrowdController" />
 	
 </beans>

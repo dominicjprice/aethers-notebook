@@ -2,6 +2,7 @@ package horizon.aether.sensors;
 
 import horizon.aether.utilities.CompressionUtils;
 import horizon.aether.utilities.FileUtils;
+import horizon.aether.utilities.PrefsUtils;
 import horizon.android.logging.Logger;
 
 import java.io.BufferedWriter;
@@ -107,8 +108,8 @@ extends LoggingListenerService
         int bufSize = 0;
         synchronized(bufferLock) {
             bufSize = bufData.getBytes().length;
-            File dir = new File(Preferences.Helper.getLogsDirPath(getBaseContext()));
-            long maxTotalCapacity = Preferences.Helper.getMaxTotalCapacity(getBaseContext());
+            File dir = new File(PrefsUtils.getLogsDirPath(getBaseContext()));
+            long maxTotalCapacity = PrefsUtils.getMaxTotalCapacity(getBaseContext());
             
             synchronized (LockManager.logDirLock) {
                 if (FileUtils.getDirSize(dir) + bufSize >= maxTotalCapacity) {
@@ -119,15 +120,15 @@ extends LoggingListenerService
 
         // make sure we won't get over the max file size
         synchronized(LockManager.logFileLock) {
-            File logFile = new File(Preferences.Helper.getLogFilePath(getBaseContext()));
-            if (logFile.length() + bufSize > Preferences.Helper.getMaxFileSize(getBaseContext())) {
+            File logFile = new File(PrefsUtils.getLogFilePath(getBaseContext()));
+            if (logFile.length() + bufSize > PrefsUtils.getMaxFileSize(getBaseContext())) {
                 archive();
             }
 
             // everything OK, now write data to file
             try {
                 PrintWriter logOut = new PrintWriter(new BufferedWriter(new FileWriter(
-                        Preferences.Helper.getLogFilePath(getBaseContext()), true)));
+                        PrefsUtils.getLogFilePath(getBaseContext()), true)));
                 logOut.print(bufData);
                 logOut.flush();
                 logOut.close();            
@@ -145,7 +146,7 @@ extends LoggingListenerService
      */
     private void cleanUp() {
         logger.verbose("FileSystemLoggingListenerService.cleanUp()");
-        final int strategy = Preferences.Helper.getStorageCleanupStrategy(getBaseContext());
+        final int strategy = PrefsUtils.getStorageCleanupStrategy(getBaseContext());
         
         switch (strategy) {
         case 0:
@@ -173,8 +174,8 @@ extends LoggingListenerService
                     public void run() {
                         try {
                             // calculate file paths
-                            String logsDirPath = Preferences.Helper.getLogsDirPath(getBaseContext());
-                            String logFilePath = Preferences.Helper.getLogFilePath(getBaseContext());
+                            String logsDirPath = PrefsUtils.getLogsDirPath(getBaseContext());
+                            String logFilePath = PrefsUtils.getLogFilePath(getBaseContext());
                             String time = new SimpleDateFormat("dd-MM-yyyy@HH-mm-ss").format(new Date());
                             String archivesDirPath = logsDirPath + "archives/";
                             String zipPath = archivesDirPath + "archived-sensorservice.log" + time + ".dfl";
@@ -209,7 +210,7 @@ extends LoggingListenerService
             int howMany = 0;
 
             // grab files and sort by last modified (ascending)
-            File dir = new File(Preferences.Helper.getArchivesDir(getBaseContext()));
+            File dir = new File(PrefsUtils.getArchivesDir(getBaseContext()));
             if (dir.exists()) {
                 File[] files = dir.listFiles();
                 if (files.length > 0) {

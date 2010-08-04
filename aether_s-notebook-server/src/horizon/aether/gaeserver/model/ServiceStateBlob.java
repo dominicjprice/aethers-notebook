@@ -1,12 +1,12 @@
 package horizon.aether.gaeserver.model;
 
+import javax.jdo.annotations.IdGeneratorStrategy;
 import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
+import javax.jdo.annotations.PrimaryKey;
 
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
-import com.google.appengine.repackaged.org.json.JSONException;
-import com.google.appengine.repackaged.org.json.JSONStringer;
 
 /**
  * Class that represents a blob for service state entries. 
@@ -17,9 +17,8 @@ import com.google.appengine.repackaged.org.json.JSONStringer;
  *   - roaming (boolean)
  *   - state (String)
  */
-
 @PersistenceCapable
-public class ServiceStateBlob extends Blob {
+public class ServiceStateBlob implements IBlob {
 
     public static final String STATE_EMERGENCY_ONLY = "STATE_EMERGENCY_ONLY";
     public static final String STATE_IN_SERVICE = "STATE_IN_SERVICE";
@@ -27,6 +26,10 @@ public class ServiceStateBlob extends Blob {
     public static final String STATE_POWER_OFF = "STATE_POWER_OFF";
     public static final String STATE_UNKNOWN = "STATE_UNKNOWN";
     
+    @PrimaryKey
+    @Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY)
+    Key key;
+
     @Persistent
     private String operatorAlphaLong;
     
@@ -123,39 +126,83 @@ public class ServiceStateBlob extends Blob {
      * Default constructor.
      */
     public ServiceStateBlob() { }
-    
+
     /**
-     * Creates the blob's key.
+     * Creates the key.
      */
     @Override
-    protected Key createKey() {
-        String keyString = operatorAlphaLong + operatorAlphaShort + operatorNumeric + roaming + state;
-        return KeyFactory.createKey(ServiceStateBlob.class.getSimpleName(), keyString);
+    public void createKey() {
+        this.key = KeyFactory.createKey(ServiceStateBlob.class.getSimpleName(), this.hashCode());
     }
 
     /**
-     * Returns a JSON string representation of the object.
+     * Gets teh key.
      */
     @Override
-    protected String toJSONString() {
-        JSONStringer data = new JSONStringer();
-        try 
-        {
-            data.object();
-            data.key("operatorAlphaLong");
-            data.value(this.getOperatorAlphaLong());
-            data.key("operatorAlphaShort");
-            data.value(this.getOperatorAlphaShort());
-            data.key("operatorNumeric");
-            data.value(this.getOperatorNumeric());
-            data.key("roaming");
-            data.value(this.isRoaming());
-            data.key("state");
-            data.value(this.state);
-            data.endObject();
-        }
-        catch (JSONException e){}
+    public Key getKey() {
+        if (this.key == null)
+            createKey();
         
-        return data.toString();
+        return this.key;
     }
+
+    /* (non-Javadoc)
+     * @see java.lang.Object#hashCode()
+     */
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime
+                * result
+                + ((operatorAlphaLong == null) ? 0 : operatorAlphaLong
+                        .hashCode());
+        result = prime
+                * result
+                + ((operatorAlphaShort == null) ? 0 : operatorAlphaShort
+                        .hashCode());
+        result = prime * result
+                + ((operatorNumeric == null) ? 0 : operatorNumeric.hashCode());
+        result = prime * result + (roaming ? 1231 : 1237);
+        result = prime * result + ((state == null) ? 0 : state.hashCode());
+        return result;
+    }
+
+    /* (non-Javadoc)
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (!(obj instanceof ServiceStateBlob))
+            return false;
+        ServiceStateBlob other = (ServiceStateBlob) obj;
+        if (operatorAlphaLong == null) {
+            if (other.operatorAlphaLong != null)
+                return false;
+        } else if (!operatorAlphaLong.equals(other.operatorAlphaLong))
+            return false;
+        if (operatorAlphaShort == null) {
+            if (other.operatorAlphaShort != null)
+                return false;
+        } else if (!operatorAlphaShort.equals(other.operatorAlphaShort))
+            return false;
+        if (operatorNumeric == null) {
+            if (other.operatorNumeric != null)
+                return false;
+        } else if (!operatorNumeric.equals(other.operatorNumeric))
+            return false;
+        if (roaming != other.roaming)
+            return false;
+        if (state == null) {
+            if (other.state != null)
+                return false;
+        } else if (!state.equals(other.state))
+            return false;
+        return true;
+    }
+
 }
