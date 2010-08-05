@@ -118,4 +118,23 @@ public class PrefsUtils {
                     .getBoolean(context.getString(R.string.Preferences_startOnBootFlag), false);
     }
 
+    /**
+     * Gets the preferred uploading times.
+     * @param context
+     * @return
+     */
+    public static int getUploadTimes(Context context) {
+        return Integer.parseInt(PreferenceManager.getDefaultSharedPreferences(context)
+                    .getString(context.getString(R.string.Preferences_uploadWhen), "0"));
+    }
+    
+    /**
+     * Gets the preferred connection type.
+     * @param context
+     * @return
+     */
+    public static int getUploadConnection(Context context) {
+        return Integer.parseInt(PreferenceManager.getDefaultSharedPreferences(context)
+                .getString(context.getString(R.string.Preferences_uploadUsing), "0"));
+    }
 }

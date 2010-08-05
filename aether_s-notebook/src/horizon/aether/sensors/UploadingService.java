@@ -13,6 +13,7 @@ import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
 import android.os.RemoteException;
+import android.widget.Toast;
 
 /**
  * Service that takes care of the uploading of the archived log files.
@@ -22,6 +23,17 @@ extends Service {
 
     private static final Logger logger = Logger.getLogger(UploadingService.class);
     
+    public static final int UPLOAD_WHEN_USER_SAYS = 0;
+    public static final int UPLOAD_WHEN_WE_HAVE_FILE = 1;
+    public static final int UPLOAD_WHEN_REACHING_MAX = 2;
+    
+    public static final int UPLOAD_USING_ANY_CONNECTION = 0;
+    public static final int UPLOAD_USING_WIFI_ONLY = 1;
+    
+    public static final String UPLOADING_SERVICE_USER_CLICK_ACTION = "UPLOADING_SERVICE_USER_CLICK_ACTION";
+    public static final String UPLOADING_SERVICE_ARCHIVE_ACTION = "UPLOADING_SERVICE_ARCHIVE_ACTION";
+    public static final String UPLOADING_SERVICE_CONNECTIVITY_RECEIVER_ACTION = "UPLOADING_SERVICE_CONNECTIVITY_RECEIVER_ACTION";
+        
     /**
      * Returns the communication channel to the service. This is always null as 
      * the UploadingService does not expose any methods to be invoked by other services.
@@ -57,9 +69,8 @@ extends Service {
     public void onStart(Intent intent, int startId) {
         super.onStart(intent, startId);
         logger.verbose("UploadingService.onStart(" + intent + ", " + startId + ")");
-        
-        // new thread to upload files
-        startArchivingThread();
+
+        checkAndUpload(intent.getAction());
     }
     
     /**
@@ -68,14 +79,55 @@ extends Service {
      */
     public class UploadingServiceStub extends IUploadingService.Stub {
         public void uploadArchives() throws RemoteException {
-            startArchivingThread();
+            startUploadingThread();
+        }
+    }
+
+    private void checkAndUpload(String action) {
+        boolean gotFiles = checkForArchives();
+        boolean gotConnection = ConnectivityReceiver.checkConnection(this);        
+        
+        if (action.equals(UPLOADING_SERVICE_USER_CLICK_ACTION)) {
+            if (gotFiles && gotConnection) {
+                startUploadingThread();
+            }
+            else {
+                String text = "";
+                if (!gotFiles)
+                    text = "No archived files to upload.";
+                if (!gotConnection)
+                    text = "No connection.";
+                Toast.makeText(this, "Failed to upload archives. " + text, Toast.LENGTH_SHORT).show();
+            }
+        }
+        else if (action.equals(UPLOADING_SERVICE_ARCHIVE_ACTION)
+                || action.equals(UPLOADING_SERVICE_CONNECTIVITY_RECEIVER_ACTION)) {
+            int uploadTime = PrefsUtils.getUploadTimes(this); 
+            if (uploadTime == UPLOAD_WHEN_WE_HAVE_FILE && gotFiles && gotConnection) {
+                startUploadingThread();
+            }
+            else if (uploadTime == UPLOAD_WHEN_REACHING_MAX && gotConnection) {
+                // reaching max?
+                File dir = new File(PrefsUtils.getLogsDirPath(this));
+                long maxTotalCapacity = PrefsUtils.getMaxTotalCapacity(this);
+                long maxFileSize = PrefsUtils.getMaxFileSize(this);
+                synchronized (LockManager.logDirLock) {
+                    long dirSize = FileUtils.getDirSize(dir);
+                    if (dirSize + maxFileSize * 1.5 >= maxTotalCapacity) {
+                        // yes, upload
+                        startUploadingThread();
+                    }
+                }
+            }
         }
     }
     
-    private void startArchivingThread() {
+    private void startUploadingThread() {
+        logger.verbose("UploadingService.startUploadingThread()");
         Runnable uploadArchivesRunnable = new Runnable() {
             @Override
             public void run() {
+                
                 // grab files and sort by last modified (ascending)
                 File dir = new File(PrefsUtils.getArchivesDir(getBaseContext()));
 
@@ -108,5 +160,21 @@ extends Service {
         };
         
         new Thread(null, uploadArchivesRunnable, "UploadingFilesThread").start();
+    }
+    
+    private boolean checkForArchives() {
+        boolean gotFiles = false;
+        synchronized(LockManager.logArchivesDirLock) {
+            File dir = new File(PrefsUtils.getArchivesDir(this));
+        
+            if (dir.exists()) {
+                File[] files = dir.listFiles();
+                if (files.length > 0) {
+                    gotFiles = true;
+                }
+            }
+        }
+        
+        return gotFiles;
     }
 }

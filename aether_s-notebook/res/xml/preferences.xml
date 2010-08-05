@@ -43,7 +43,25 @@
 		android:entries="@array/storageCleanupStrategyOptions"
 		android:entryValues="@array/storageCleanupStrategyValues"
 		android:defaultValue="0" />	
+	
+	<!-- Uploading preferences -->
+	<PreferenceCategory android:key="uploadingPrefsCategory" android:title="Uploading" >
+		<ListPreference
+			android:key="@string/Preferences_uploadWhen"
+			android:title="Upload when.."
+			android:entries="@array/uploadWhenPrefOptions"
+			android:entryValues="@array/uploadWhenPrefValues"
+			android:defaultValue="0" />
+
+		<ListPreference
+			android:key="@string/Preferences_uploadUsing"
+			android:title="Upload using.."
+			android:entries="@array/uploadUsingPrefOptions"
+			android:entryValues="@array/uploadUsingPrefValues"
+			android:defaultValue="0" />
+	</PreferenceCategory>
 			
+	<!-- Sensors -->
 	<PreferenceCategory
 		android:key="@string/Preferences_sensors"
 		android:title="Sensors" />	

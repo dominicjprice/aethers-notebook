@@ -10,6 +10,7 @@ import java.util.Map;
 
 import android.app.Service;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.res.Configuration;
 import android.os.IBinder;
 import android.os.RemoteException;
@@ -52,6 +53,8 @@ extends Service
             loggingServicesStatuses.put(desc, new Boolean(false));
     }
     
+    private ConnectivityReceiver connectivityReceiver = new ConnectivityReceiver();
+    
     /**
      * Called by the system when the device configuration changes.
      */
@@ -87,8 +90,7 @@ extends Service
         for(LoggingServiceDescriptor desc : loggingServices)
             stopService(desc.getIntent(this));
 
-        stopService(new Intent(getBaseContext(), LocationService.class));
-        stopService(new Intent(getBaseContext(), FileSystemLoggingListenerService.class));
+        finaliseLogging();
     }
 
     /**
@@ -131,11 +133,10 @@ extends Service
       
         // also initialise logging (if it was on by configuration)
         if (PrefsUtils.getLoggingStatus(this)) {
-            startService(new Intent(getBaseContext(), LocationService.class));
-            startService(new Intent(getBaseContext(), FileSystemLoggingListenerService.class));
+            initialiseLogging();
         }
     }
-
+    
     /**
      * Called by the system when all clients have disconnected from a particular
      * interface published by the service.
@@ -257,8 +258,7 @@ extends Service
         public void startLogging() 
         throws RemoteException {
             logger.verbose("SensorServiceControlStub.startLogging()");
-            startService(new Intent(getBaseContext(), LocationService.class));
-            startService(new Intent(getBaseContext(), FileSystemLoggingListenerService.class));
+            initialiseLogging();
         }
 
         /**
@@ -268,8 +268,19 @@ extends Service
         public void stopLogging() 
         throws RemoteException {
             logger.verbose("SensorServiceControlStub.stopLogging()");
-            stopService(new Intent(getBaseContext(), LocationService.class));
-            startService(new Intent(getBaseContext(), FileSystemLoggingListenerService.class));
+            finaliseLogging();
         }
+    }
+
+    private void initialiseLogging() {
+        startService(new Intent(this, LocationService.class));
+        startService(new Intent(this, FileSystemLoggingListenerService.class));
+        registerReceiver(connectivityReceiver, new IntentFilter("android.net.conn.CONNECTIVITY_CHANGE"));
+    }
+    
+    private void finaliseLogging() {
+        stopService(new Intent(getBaseContext(), LocationService.class));
+        stopService(new Intent(getBaseContext(), FileSystemLoggingListenerService.class));
+        unregisterReceiver(connectivityReceiver);
     }
 }

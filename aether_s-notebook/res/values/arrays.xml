@@ -7,4 +7,26 @@
     <string-array name="storageCleanupStrategyValues">
     	<item>0</item>
     </string-array>
+    
+    <string-array name="uploadWhenPrefOptions">
+    	<item>I say so</item>
+    	<item>I\'ve got at least one file</item>
+    	<item>Reaching max capacity</item>
+    </string-array>
+    
+    <string-array name="uploadWhenPrefValues">
+    	<item>0</item>
+    	<item>1</item>
+    	<item>2</item>
+    </string-array>
+    
+    <string-array name="uploadUsingPrefOptions">
+    	<item>Any connection (3G/Wi-Fi)</item>
+    	<item>Only Wi-Fi</item>
+    </string-array>
+    
+    <string-array name="uploadUsingPrefValues">
+    	<item>0</item>
+    	<item>1</item>
+    </string-array>
 </resources>

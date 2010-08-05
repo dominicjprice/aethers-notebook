@@ -99,7 +99,8 @@ public class Preferences extends PreferenceActivity {
         cmdUpload.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent uploadIntent = new Intent(getBaseContext(), UploadingService.class);
+                Intent uploadIntent = new Intent(UploadingService.UPLOADING_SERVICE_USER_CLICK_ACTION, 
+                                            null, getBaseContext(), UploadingService.class);
                 startService(uploadIntent);
             }
         });
@@ -254,7 +255,7 @@ public class Preferences extends PreferenceActivity {
         
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
-            logger.warn("toggleLoggingServiceConnection.onServiceConnected()");
+            logger.verbose("toggleLoggingServiceConnection.onServiceConnected()");
             
             final SensorServiceControl control = (SensorServiceControl)service;
             try {
@@ -270,6 +271,5 @@ public class Preferences extends PreferenceActivity {
             }
         }
     };
-    
 }
 

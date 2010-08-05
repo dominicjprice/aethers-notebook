@@ -19,4 +19,6 @@
 	<string name="Preferences_sensors">sensors</string>
 	<string name="Preferences_startOnBootFlag">startOnBootFlag</string>
 	<string name="Preferences_cmdUpload">cmdUpload</string>
+	<string name="Preferences_uploadWhen">uploadWhen</string>
+	<string name="Preferences_uploadUsing">uploadUsing</string>
 </resources>

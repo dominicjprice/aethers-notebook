@@ -18,6 +18,7 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 
 /**
  * Listens to the logging and records log entries to the file system.
@@ -38,6 +39,7 @@ extends LoggingListenerService
     private static final ReentrantLock bufferLock = new ReentrantLock();
     private static final Logger logger = Logger.getLogger(FileSystemLoggingListenerService.class);
     private StringBuilder buffer = new StringBuilder();
+    private ServiceConnection loggingListenerServiceConnection = new LoggingListenerServiceConnection(this);
     
     /**
      * Logs a LogEntry by saving it to the buffer. If the buffer is full,
@@ -74,7 +76,7 @@ extends LoggingListenerService
         // bind to logging service
         Intent bindIntent = new Intent(this, SensorService.class);
         bindIntent.setAction(SensorService.SENSOR_SERVICE_LOGGER_LISTENER_REGISTER_ACTION);
-        bindService(bindIntent, new LoggingListenerServiceConnection(this), Context.BIND_AUTO_CREATE);
+        bindService(bindIntent, loggingListenerServiceConnection, Context.BIND_AUTO_CREATE);
     }
 
     /**
@@ -88,6 +90,9 @@ extends LoggingListenerService
         // flush buffer contents before destroying 
         bufferLock.lock();
         flushBufferToFile();
+        
+        // unbind from logging service
+        unbindService(loggingListenerServiceConnection);
     }
 
     /**
@@ -193,6 +198,12 @@ extends LoggingListenerService
                                 
                                 // empty log file
                                 logFile.delete();
+                                
+                                // let the uploading service know
+                                Intent i = new Intent(UploadingService.UPLOADING_SERVICE_ARCHIVE_ACTION,
+                                                        null, getBaseContext(), UploadingService.class);
+                                getBaseContext().startService(i);
+
                             }
                         }
                         catch (IOException e) {
