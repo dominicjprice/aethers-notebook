@@ -2,5 +2,5 @@ package horizon.aether.sensors;
 
 interface IUploadingService 
 {
-	void uploadArchives();
+	boolean uploadFile(in String filePath, in String serverUrl);
 }

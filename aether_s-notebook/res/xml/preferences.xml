@@ -2,10 +2,6 @@
 
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"> 
 	
-	<horizon.aether.ui.ButtonPreference
-		android:key="@string/Preferences_cmdUpload"
-		android:title="Upload archives now" />
-	
 	<CheckBoxPreference
 		android:key="@string/Preferences_startOnBootFlag"
 		android:title="Start on boot"
@@ -59,7 +55,12 @@
 			android:entries="@array/uploadUsingPrefOptions"
 			android:entryValues="@array/uploadUsingPrefValues"
 			android:defaultValue="0" />
+
+		<horizon.aether.ui.ButtonPreference
+			android:key="@string/Preferences_cmdUpload"
+			android:title="Upload archives now" />	
 	</PreferenceCategory>
+
 			
 	<!-- Sensors -->
 	<PreferenceCategory

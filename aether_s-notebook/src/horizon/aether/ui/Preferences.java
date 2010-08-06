@@ -32,10 +32,13 @@ import android.widget.Toast;
 /**
  * Preferences activity that provides shows a preferences screen to the user to:
  *    - Toggle logging on/off
+ *    - Set start on boot flag 
  *    - Set path for logs directory
  *    - Set maximum file size
  *    - Set maximum total capacity used by the log files
- *    - Set strategy to be followed in case the maximum total capacity has been reached. 
+ *    - Set strategy to be followed in case the maximum total capacity has been reached.
+ *    - Set uploading preferences such as connection and strategy 
+ *    - Turn on/off sensors
  *
  * A button is also provided to upload the archives to the server.
  */
@@ -53,6 +56,9 @@ public class Preferences extends PreferenceActivity {
     private PreferenceCategory sensorsCategory;
     private boolean isLoggingOn;
     
+    private SensorServiceControl controlService = null;
+    private ServiceConnection controlServiceConnection;
+    
     /**
      * Called by the system when the activity is created. The activity
      * is initialised to show the current user settings.
@@ -62,17 +68,17 @@ public class Preferences extends PreferenceActivity {
         super.onCreate(savedInstanceState);
         logger.verbose("Preferences.onCreate()");
         addPreferencesFromResource(R.xml.preferences);
+
+        AppHelper.initialize(this);
+
+        connectControlService();
         
-        setupUploadButtonPref();
-        setupLoggingPref();
-        setupSensorsPref();        
         setupLogsDirPref();
         setupMaxFileSizePref();
-        setupMaxTotalCapacityPref();
-        
-        AppHelper.initialize(this);
+        setupMaxTotalCapacityPref();        
+        setupUploadButtonPref();
     }
-
+    
     /**
      * Called by the system when the activity is destroyed. The activity
      * needs to unbind from any services to avoid leaks.
@@ -81,17 +87,68 @@ public class Preferences extends PreferenceActivity {
     public void onDestroy() {
         super.onDestroy();
         logger.verbose("Preferences.onDestroy()");
-        unbindService(sensorsServiceConnection);
-        try {
-            unbindService(toggleLoggingServiceConnection);
-        }
-        catch (IllegalArgumentException e) {}
+        unbindService(controlServiceConnection);
+    }
+
+    /**
+     * Connects to the SensorsService.
+     */
+    public void connectControlService() {
+        logger.warn("Preferences.connectControlService()");
+
+        controlServiceConnection = new ServiceConnection() {
+            @Override
+            public void onServiceConnected(ComponentName name, IBinder service) {
+                logger.warn("Connected");
+                controlService = (SensorServiceControl)service;
+                setupLoggingPref();
+                setupSensorsPref();                
+            }
+
+            @Override
+            public void onServiceDisconnected(ComponentName arg0) {
+                logger.warn("Disconnected");
+                controlService = null;
+            }
+        };
+
+        Intent serviceIntent = new Intent(getBaseContext(), SensorService.class);
+        serviceIntent.setAction(SensorService.SENSOR_SERVICE_CONTROL_ACTION);
+        bindService(serviceIntent, controlServiceConnection, 0);
     }
 
     private void setupSensorsPref() {
-        Intent serviceIntent = new Intent(this, SensorService.class);
-        serviceIntent.setAction(SensorService.SENSOR_SERVICE_CONTROL_ACTION);
-        bindService(serviceIntent, sensorsServiceConnection, 0);
+        sensorsCategory = (PreferenceCategory)findPreference(getString(R.string.Preferences_sensors));
+        try {
+            for (final LoggingServiceDescriptor desc: controlService.getLoggers()) {
+                CheckBoxPreference p = new CheckBoxPreference(getBaseContext());
+                p.setKey(desc.name);
+                p.setTitle(desc.name);
+                p.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
+                    @Override
+                    public boolean onPreferenceChange(Preference preference, Object newValue) {
+                        Boolean b = (Boolean)newValue;
+                        try {
+                            if (b.booleanValue())
+                                controlService.startLogger(desc);
+                            else {
+                                controlService.stopLogger(desc);
+                            }
+                        }
+                        catch (RemoteException e) {
+                            throw new RuntimeException(e);
+                        }
+                        return true;
+                    }
+                });
+
+                // add item to UI
+                sensorsCategory.addItemFromInflater(p);
+            }   
+        }
+        catch (RemoteException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private void setupUploadButtonPref() {
@@ -111,10 +168,19 @@ public class Preferences extends PreferenceActivity {
         loggingPref.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
             @Override
             public boolean onPreferenceChange(Preference preference, Object newValue) {
-                Intent serviceIntent = new Intent(getBaseContext(), SensorService.class);
-                serviceIntent.setAction(SensorService.SENSOR_SERVICE_CONTROL_ACTION);
                 isLoggingOn = ((Boolean)newValue).booleanValue();
-                bindService(serviceIntent, toggleLoggingServiceConnection, 0);                
+                logger.warn("isLoggingOn=" + isLoggingOn);
+                try {
+                    if (isLoggingOn) {
+                        controlService.startLogging();
+                    }
+                    else {
+                        controlService.stopLogging();
+                    }
+                } 
+                catch (RemoteException e) {
+                    throw new RuntimeException(e);
+                }
                 return true;
             }
         });
@@ -202,74 +268,6 @@ public class Preferences extends PreferenceActivity {
             }
         });
     }
-    
-    private ServiceConnection sensorsServiceConnection = new ServiceConnection() {
-        @Override
-        public void onServiceDisconnected(ComponentName name) {
-            sensorsServiceConnection = null;
-        }
-        
-        @Override
-        public void onServiceConnected(ComponentName name, IBinder service) {
-            sensorsCategory = (PreferenceCategory)findPreference(getString(R.string.Preferences_sensors));
-            final SensorServiceControl control = (SensorServiceControl)service;
 
-            try {
-                for (final LoggingServiceDescriptor desc: control.getLoggers()) {
-                    CheckBoxPreference p = new CheckBoxPreference(getBaseContext());
-                    p.setKey(desc.name);
-                    p.setTitle(desc.name);
-                    p.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
-                        @Override
-                        public boolean onPreferenceChange(Preference preference, Object newValue) {
-                            Boolean b = (Boolean)newValue;
-                            try {
-                                if (b.booleanValue())
-                                    control.startLogger(desc);
-                                else {
-                                    control.stopLogger(desc);
-                                }
-                            }
-                            catch (RemoteException e) {
-                                throw new RuntimeException(e);
-                            }
-                            return true;
-                        }
-                    });
-
-                    // add item to UI
-                    sensorsCategory.addItemFromInflater(p);
-                }
-            } 
-            catch (RemoteException e) {
-                throw new RuntimeException(e);
-            }
-        }                    
-    };
-    
-    private ServiceConnection toggleLoggingServiceConnection = new ServiceConnection() {
-        @Override
-        public void onServiceDisconnected(ComponentName name) { 
-            toggleLoggingServiceConnection = null;
-        }
-        
-        @Override
-        public void onServiceConnected(ComponentName name, IBinder service) {
-            logger.verbose("toggleLoggingServiceConnection.onServiceConnected()");
-            
-            final SensorServiceControl control = (SensorServiceControl)service;
-            try {
-                if (isLoggingOn) {
-                    control.startLogging();
-                }
-                else {
-                    control.stopLogging();
-                }
-            } 
-            catch (RemoteException e) {
-                throw new RuntimeException(e);
-            }
-        }
-    };
 }
 

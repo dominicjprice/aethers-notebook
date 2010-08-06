@@ -78,8 +78,8 @@ extends Service {
      * interface defined in IUploadingService.aidl.
      */
     public class UploadingServiceStub extends IUploadingService.Stub {
-        public void uploadArchives() throws RemoteException {
-            startUploadingThread();
+        public boolean uploadFile(String filePath, String serverUrl) throws RemoteException {
+            return FileUtils.uploadFile(filePath, serverUrl);    
         }
     }
 

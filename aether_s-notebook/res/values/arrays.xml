@@ -10,8 +10,8 @@
     
     <string-array name="uploadWhenPrefOptions">
     	<item>I say so</item>
-    	<item>I\'ve got at least one file</item>
-    	<item>Reaching max capacity</item>
+    	<item>There is at least one file</item>
+    	<item>Maximum capacity is almost reached</item>
     </string-array>
     
     <string-array name="uploadWhenPrefValues">

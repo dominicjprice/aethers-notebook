@@ -122,16 +122,8 @@ extends Service
     {
         super.onStart(intent, startId);
         logger.verbose("SensorService.onStart()");
-        
-        // start the loggers from configuration
-        for (final LoggingServiceDescriptor desc: this.loggingServices) {
-          if (PrefsUtils.getLoggerStatus(this, desc.name)) {
-              startService(desc.getIntent(SensorService.this));
-              loggingServicesStatuses.put(desc, Boolean.TRUE);
-          }
-        }
       
-        // also initialise logging (if it was on by configuration)
+        // initialise logging and sensors (according to configuration)
         if (PrefsUtils.getLoggingStatus(this)) {
             initialiseLogging();
         }
@@ -273,6 +265,14 @@ extends Service
     }
 
     private void initialiseLogging() {
+        // start sensors (according to preferences)
+        for (final LoggingServiceDescriptor desc : this.loggingServices) {
+          if (PrefsUtils.getLoggerStatus(this, desc.name)) {
+              startService(desc.getIntent(SensorService.this));
+              loggingServicesStatuses.put(desc, Boolean.TRUE);
+          }
+        }
+        
         startService(new Intent(this, LocationService.class));
         startService(new Intent(this, FileSystemLoggingListenerService.class));
         registerReceiver(connectivityReceiver, new IntentFilter("android.net.conn.CONNECTIVITY_CHANGE"));
@@ -282,5 +282,13 @@ extends Service
         stopService(new Intent(getBaseContext(), LocationService.class));
         stopService(new Intent(getBaseContext(), FileSystemLoggingListenerService.class));
         unregisterReceiver(connectivityReceiver);
+        
+        for (final LoggingServiceDescriptor desc : this.loggingServices) {
+            if (loggingServicesStatuses.get(desc).booleanValue()) {
+                logger.warn("Stopping " + desc.name);
+                stopService(desc.getIntent(SensorService.this));
+                loggingServicesStatuses.put(desc, Boolean.FALSE);
+            }
+        }
     }
 }
