@@ -43,13 +43,12 @@ public class ConnectivityReceiver extends BroadcastReceiver {
         if (networkInfo != null) {
             if (networkInfo.getState() == NetworkInfo.State.CONNECTED) {
                 // got connected connection
-                if (networkInfo.getType() == ConnectivityManager.TYPE_MOBILE
-                        && PrefsUtils.getUploadConnection(context) == UploadingService.UPLOAD_USING_ANY_CONNECTION
-                 || networkInfo.getType() == ConnectivityManager.TYPE_WIFI
-                         && PrefsUtils.getUploadConnection(context) == UploadingService.UPLOAD_USING_WIFI_ONLY) {
+                if (networkInfo.getType() == ConnectivityManager.TYPE_WIFI
+                         && PrefsUtils.getUploadConnection(context) == UploadingService.UPLOAD_USING_WIFI_ONLY
+                || PrefsUtils.getUploadConnection(context) == UploadingService.UPLOAD_USING_ANY_CONNECTION) {
                     // got preferred connection
                     isConnReady = true;
-                }
+                }                
             }
         }
         

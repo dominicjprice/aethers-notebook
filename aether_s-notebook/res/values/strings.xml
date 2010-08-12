@@ -7,9 +7,7 @@
 
 	<string name="application_sensorservice_configurator_name">Configure Aether\'s Notebook</string> 
 	<string name="application_geotag_name">Aether\'s Notebook</string>
-	
-	<string name="menu_item_preferences">Preferences</string>
-	
+		
 	<!-- Preferences activity -->
 	<string name="Preferences_loggingOn">loggingOn</string>
 	<string name="Preferences_logsDir">logsDir</string>

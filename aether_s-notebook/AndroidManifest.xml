@@ -23,7 +23,7 @@
 		 
 		<!-- Preferences UI -->
 		<activity android:name=".ui.Preferences" 
-				android:label="Aether's Preferences" 
+				android:label="Aether's notebook preferences" 
 				android:launchMode="singleTask">
 			<intent-filter>
 				<action android:name="android.intent.action.MAIN" />
