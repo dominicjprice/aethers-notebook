@@ -1,32 +1,76 @@
 package horizon.aether.gaeserver.model;
 
+
+import javax.jdo.annotations.IdGeneratorStrategy;
+import javax.jdo.annotations.PersistenceCapable;
+import javax.jdo.annotations.Persistent;
+import javax.jdo.annotations.PrimaryKey;
+
+import com.google.appengine.api.datastore.Key;
+
 /**
- * Class that represents a blob for service state entries. 
- * Such a blob is described by the following:
+ * Class that represents a service state entry. Such an entry,
+ * is described by the following: 
  *   - operatorAlphaLong (String)
  *   - operatorAlphaShort (String)
  *   - operatorNumeric (String)
  *   - roaming (boolean)
  *   - state (String)
  */
-public class ServiceStateBlob {
-
+@PersistenceCapable
+public class ServiceStateEntry {
+    
+    public static final String IDENTIFIER = "SERVICE_STATE";
+    
     public static final String STATE_EMERGENCY_ONLY = "STATE_EMERGENCY_ONLY";
     public static final String STATE_IN_SERVICE = "STATE_IN_SERVICE";
     public static final String STATE_OUT_OF_SERVICE = "STATE_OUT_OF_SERVICE";
     public static final String STATE_POWER_OFF = "STATE_POWER_OFF";
     public static final String STATE_UNKNOWN = "STATE_UNKNOWN";
     
+    @PrimaryKey
+    @Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY)
+    private Key key;
+
+    @Persistent
+    private long timestamp;
+    
+    @Persistent(defaultFetchGroup = "true")
+    private Location location;
+
+    @Persistent
     private String operatorAlphaLong;
     
+    @Persistent
     private String operatorAlphaShort;
     
+    @Persistent
     private String operatorNumeric;
     
+    @Persistent
     private boolean roaming;
  
+    @Persistent
     private String state;
     
+    /**
+     * Gets the key.
+     * @return
+     */
+    public Key getKey() { return this.key; }
+    
+    /**
+     * Gets the timestamp.
+     * @return
+     */
+    public long getTimestamp() { return this.timestamp; }
+    
+    /**
+     * Gets the location.
+     * @return
+     */
+    public Location getLocation() { return this.location; }
+
     /**
      * Gets the operator (alpha long).
      * @return
@@ -89,14 +133,19 @@ public class ServiceStateBlob {
     
     /**
      * Constructor.
+     * @param timestamp
+     * @param location
      * @param operatorAlphaLong
      * @param operatorAlphaShort
      * @param operatorNumeric
      * @param roaming
      * @param state
      */
-    public ServiceStateBlob(String operatorAlphaLong, String operatorAlphaShort, 
-                        String operatorNumeric, boolean roaming, String state) {
+    public ServiceStateEntry(long timestamp, Location location, 
+                            String operatorAlphaLong, String operatorAlphaShort, 
+                            String operatorNumeric, boolean roaming, String state) {
+        this.timestamp = timestamp;
+        this.location = location;
         this.operatorAlphaLong = operatorAlphaLong;
         this.operatorAlphaShort = operatorAlphaShort;
         this.operatorNumeric = operatorNumeric;
@@ -105,9 +154,27 @@ public class ServiceStateBlob {
     }
     
     /**
+     * Constructor
+     * @param timestamp
+     * @param identifier
+     * @param location
+     * @param blob
+     */
+    public ServiceStateEntry(long timestamp, Location location, ServiceStateBlob blob) {
+        this.timestamp = timestamp;
+        this.location = location;
+        this.operatorAlphaLong = blob.getOperatorAlphaLong();
+        this.operatorAlphaShort = blob.getOperatorAlphaShort();
+        this.operatorNumeric = blob.getOperatorNumeric();
+        this.roaming = blob.isRoaming();
+        this.state = blob.getState();
+    }
+    
+    /**
      * Default constructor.
      */
-    public ServiceStateBlob() { }
-
-
+    public ServiceStateEntry() { 
+        super();
+    }
+    
 }
