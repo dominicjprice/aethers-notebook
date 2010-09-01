@@ -89,8 +89,6 @@ public class DataConnectionStateEntry {
     /**
      * Default constructor.
      */
-    public DataConnectionStateEntry() { 
-        super();
-    }
+    public DataConnectionStateEntry() { }
 
 }

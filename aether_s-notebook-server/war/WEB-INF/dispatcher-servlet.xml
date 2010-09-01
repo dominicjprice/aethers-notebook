@@ -20,4 +20,6 @@
 	<!-- Crowd Controller -->
 	<bean class="horizon.aether.gaeserver.controller.CrowdController" />
 	
+	<!-- Map Controller -->
+	<bean class="horizon.aether.gaeserver.controller.MapController" />
 </beans>

@@ -101,7 +101,5 @@ public class CellLocationEntry {
     /**
      * Default constructor.
      */
-    public CellLocationEntry() { 
-        super();
-    }
+    public CellLocationEntry() { }
 }

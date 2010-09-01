@@ -36,6 +36,12 @@ public class TelephonyStateEntry {
     @Persistent(defaultFetchGroup = "true")
     private Location location;
 
+    @Persistent
+    private ArrayList<NeighbouringCell> neighbouringCells;
+    
+    @Persistent
+    private String networkType;
+
     /**
      * Gets the key.
      * @return
@@ -53,12 +59,6 @@ public class TelephonyStateEntry {
      * @return
      */
     public Location getLocation() { return this.location; }
-
-    @Persistent
-    private ArrayList<NeighbouringCell> neighbouringCells;
-    
-    @Persistent
-    private String networkType;
 
     /**
      * Gets the network type.
@@ -115,7 +115,5 @@ public class TelephonyStateEntry {
     /**
      * Default constructor.
      */
-    public TelephonyStateEntry() {
-        super();
-    }
+    public TelephonyStateEntry() { }
 }

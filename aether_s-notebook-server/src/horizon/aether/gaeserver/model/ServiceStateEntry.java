@@ -173,8 +173,6 @@ public class ServiceStateEntry {
     /**
      * Default constructor.
      */
-    public ServiceStateEntry() { 
-        super();
-    }
+    public ServiceStateEntry() { }
     
 }

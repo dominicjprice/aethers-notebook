@@ -83,7 +83,5 @@ public class SignalStrengthEntry {
     /**
      * Default constructor.
      */
-    public SignalStrengthEntry() { 
-        super();
-    }
+    public SignalStrengthEntry() { }
 }

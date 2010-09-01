@@ -94,20 +94,16 @@ public class Preferences extends PreferenceActivity {
      * Connects to the SensorsService.
      */
     public void connectControlService() {
-        logger.warn("Preferences.connectControlService()");
-
         controlServiceConnection = new ServiceConnection() {
             @Override
             public void onServiceConnected(ComponentName name, IBinder service) {
-                logger.warn("Connected");
                 controlService = (SensorServiceControl)service;
                 setupLoggingPref();
                 setupSensorsPref();                
             }
 
             @Override
-            public void onServiceDisconnected(ComponentName arg0) {
-                logger.warn("Disconnected");
+            public void onServiceDisconnected(ComponentName component) {
                 controlService = null;
             }
         };

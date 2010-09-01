@@ -15,5 +15,7 @@
 	<classpathentry kind="lib" path="war/WEB-INF/lib/commons-fileupload-1.2.1.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/jackson-core-lgpl-1.5.4.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/jackson-mapper-lgpl-1.5.4.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/standard.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/jstl.jar"/>
 	<classpathentry kind="output" path="war/WEB-INF/classes"/>
 </classpath>
