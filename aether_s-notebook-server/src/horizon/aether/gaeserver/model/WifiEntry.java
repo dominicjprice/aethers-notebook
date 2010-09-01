@@ -1,6 +1,5 @@
 package horizon.aether.gaeserver.model;
 
-
 import java.util.ArrayList;
 
 import javax.jdo.annotations.IdGeneratorStrategy;

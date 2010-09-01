@@ -1,5 +1,12 @@
 package horizon.aether.gaeserver.model;
 
+import javax.jdo.annotations.IdGeneratorStrategy;
+import javax.jdo.annotations.PersistenceCapable;
+import javax.jdo.annotations.Persistent;
+import javax.jdo.annotations.PrimaryKey;
+
+import com.google.appengine.api.datastore.Key;
+
 /**
  * Class that represents a wifi network. A wifi network is 
  * described by the following:
@@ -9,13 +16,6 @@ package horizon.aether.gaeserver.model;
  *    - frequency (int)
  *    - level (int)
  */
-import javax.jdo.annotations.IdGeneratorStrategy;
-import javax.jdo.annotations.PersistenceCapable;
-import javax.jdo.annotations.Persistent;
-import javax.jdo.annotations.PrimaryKey;
-
-import com.google.appengine.api.datastore.Key;
-
 @PersistenceCapable
 public class Wifi  {
 

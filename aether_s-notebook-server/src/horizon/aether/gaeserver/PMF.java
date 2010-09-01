@@ -4,6 +4,12 @@ package horizon.aether.gaeserver;
 import javax.jdo.JDOHelper;
 import javax.jdo.PersistenceManagerFactory;
 
+/**
+ * Singleton wrapper class with a static instance for the 
+ * PersistenceManagerFactory class.
+ * @author psyack
+ *
+ */
 public final class PMF {
     private static final PersistenceManagerFactory pmfInstance =
         JDOHelper.getPersistenceManagerFactory("transactions-optional");

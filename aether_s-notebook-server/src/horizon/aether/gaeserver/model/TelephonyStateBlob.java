@@ -1,15 +1,14 @@
 package horizon.aether.gaeserver.model;
 
+
+import java.util.ArrayList;
+
 /**
  * Class that represents a blob for telephony state entries. 
  * Such a blob is described by:
  *   - A list of neighbouring cells (ArrayList<NeighbouringCell>).
  *   - The network type (String). 
  */
-
-
-import java.util.ArrayList;
-
 public class TelephonyStateBlob {
 
     public static final String NETWORK_TYPE_EDGE = "NETWORK_TYPE_EDGE";

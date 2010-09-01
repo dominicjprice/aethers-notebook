@@ -1,5 +1,8 @@
 package horizon.aether.gaeserver.model;
 
+/**
+ * Class that represents a cell location blob.
+ */
 public class CellLocationBlob {
 
     private int cid;

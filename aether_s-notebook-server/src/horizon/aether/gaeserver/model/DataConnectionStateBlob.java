@@ -1,6 +1,8 @@
 package horizon.aether.gaeserver.model;
 
-
+/**
+ * Class that represents a data connection state blob 
+ */
 public class DataConnectionStateBlob {
 
     public static final String DATA_CONNECTED = "DATA_CONNECTED";

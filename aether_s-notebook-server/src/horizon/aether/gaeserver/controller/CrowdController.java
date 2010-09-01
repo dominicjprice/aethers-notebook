@@ -42,17 +42,31 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-
+/**
+ * Controller that handles the logic for the crowdsourcing of connectivity information.
+ * The controller will mainly handle POST requests that contain compressed log files.
+ */
 @Controller
 public class CrowdController {
     
     private static final Logger log = Logger.getLogger(CrowdController.class.getName());
 
+    /**
+     * GET requests return empty page.
+     * @return
+     */
     @RequestMapping(value = "/crowd/*", method = RequestMethod.GET)
     public String showCrowdGetScreen() {
         return "empty";
     }
 
+    /**
+     * POST requests are used to receive archived log files. The file is received,
+     * uncompressed and parsed to retrieve the logging data that are eventually
+     * persisted on the database.
+     * @param req
+     * @return an empty response
+     */
     @RequestMapping(value = "/crowd/*", method = RequestMethod.POST)
     public String showCrowdPostScreen(HttpServletRequest req) {
         try {

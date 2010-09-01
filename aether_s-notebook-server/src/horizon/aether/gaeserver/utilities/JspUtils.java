@@ -7,8 +7,16 @@ import horizon.aether.gaeserver.model.TelephonyStateEntry;
 
 import java.util.List;
 
+/**
+ * Class that contains static helper methods for drawing maps. These
+ * methods create a script string that, when executed, it draws circles
+ * on a map according to the given entries.
+ */
 public class JspUtils {
 
+    /**
+     * Draws a Data Connection State map.
+     */
     public static String drawDataConnectionStateMap(List<DataConnectionStateEntry> entries) {
         StringBuffer r = new StringBuffer();
 
@@ -29,6 +37,9 @@ public class JspUtils {
         return r.toString();
     }
 
+    /**
+     * Draws a Service State map.
+     */
     public static String drawServiceStateMap(List<ServiceStateEntry> entries) {
         StringBuffer r = new StringBuffer();
 
@@ -49,6 +60,9 @@ public class JspUtils {
         return r.toString();
     }
 
+    /**
+     * Draws a Signal Strength map.
+     */
     public static String drawSignalStrengthMap(List<SignalStrengthEntry> entries) {
         StringBuffer r = new StringBuffer();
 
@@ -70,6 +84,9 @@ public class JspUtils {
         return r.toString();
     }
 
+    /**
+     * Draws a Telephony State map.
+     */
     public static String drawTelephonyStateMap(List<TelephonyStateEntry> entries) {
         StringBuffer r = new StringBuffer();
 

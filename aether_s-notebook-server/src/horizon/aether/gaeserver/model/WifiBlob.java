@@ -1,14 +1,13 @@
 package horizon.aether.gaeserver.model;
 
-/**
- * Class that represents a blob for wifi entries. A wifi
- * blob consists of a collection of networks.
- */
-
 import java.util.ArrayList;
 
 import com.google.appengine.api.datastore.Key;
 
+/**
+ * Class that represents a blob for wifi entries. A wifi
+ * blob consists of a collection of networks.
+ */
 public class WifiBlob {
 
     Key key;

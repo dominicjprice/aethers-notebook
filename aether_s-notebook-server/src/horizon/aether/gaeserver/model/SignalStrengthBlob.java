@@ -1,5 +1,8 @@
 package horizon.aether.gaeserver.model;
 
+/**
+ * Class that represents a Signal Strength blob. 
+ */
 public class SignalStrengthBlob {
 
     private int strength;
