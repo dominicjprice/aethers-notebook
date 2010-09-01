@@ -368,16 +368,13 @@ public class MapController {
             filter = "operatorAlphaLong == operatorParam";
             parameters = "String operatorParam";
         }
-        else if (!checkOperator & checkRoaming) {
-            String filterVal = (roamingVal == 2) ? "True" : "False";
-            filter = "roaming == " + filterVal;
-            parameters = "boolean roaming";
+        else if (!checkOperator && checkRoaming) {
+            filter = "roaming == roamingParam";
+            parameters = "Boolean roamingParam";
         }
         else if (checkOperator && checkRoaming) {
-            filter = "operatorAlphaLong == operatorParam";
-            String filterVal = (roamingVal == 2) ? "True" : "False";
-            filter += " && roaming == " + filterVal;
-            parameters = "String operatorParam, Boolean roaming";
+            filter = "operatorAlphaLong == operatorParam && roaming == roamingParam";
+            parameters = "String operatorParam, Boolean roamingParam";
         }
 
         // set filters/params
@@ -403,6 +400,8 @@ public class MapController {
     @SuppressWarnings("unchecked")
     private static List<ServiceStateEntry> executeServiceStateQuery(Query query, boolean checkOperator, String operatorAlphaLong, boolean checkRoaming, int roamingVal) {
         List<ServiceStateEntry> entries = null;
+        Boolean roaming = (roamingVal == 2) ? new Boolean(true) : new Boolean(false);
+        
         if (!checkOperator & !checkRoaming) {
             entries = (List<ServiceStateEntry>) query.execute();
         }
@@ -410,10 +409,10 @@ public class MapController {
             entries = (List<ServiceStateEntry>) query.execute(operatorAlphaLong);
         }
         else if (!checkOperator & checkRoaming) {
-            entries = (List<ServiceStateEntry>) query.execute(roamingVal);
+            entries = (List<ServiceStateEntry>) query.execute(roaming);
         }
         else if (checkOperator && checkRoaming) {
-            entries = (List<ServiceStateEntry>) query.execute(operatorAlphaLong, roamingVal);
+            entries = (List<ServiceStateEntry>) query.execute(operatorAlphaLong, roaming);
         }
 
         query.closeAll();

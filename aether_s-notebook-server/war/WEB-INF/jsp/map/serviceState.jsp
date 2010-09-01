@@ -82,7 +82,6 @@
 		</tr></td>
 		
 		<tr><td>
-			<h3>Options:</h2>
 			<form>
 				Operator: 
 				<input name="txtOperator" /> <br/>

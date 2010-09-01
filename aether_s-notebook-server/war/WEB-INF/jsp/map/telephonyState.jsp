@@ -73,13 +73,12 @@
 		</tr></td>
 		
 		<tr><td>
-			<h3>Options:</h2>
 			<form>
 				Network type: <br />
-				<input type="checkbox" name="networkType" value="NETWORK_TYPE_EDGE" checked="true" /> Edge
-				<input type="checkbox" name="networkType" value="NETWORK_TYPE_GPRS" checked="true" /> GPRS 
-				<input type="checkbox" name="networkType" value="NETWORK_TYPE_UMTS" checked="true" /> UMTS
-				<input type="checkbox" name="networkType" value="NETWORK_TYPE_UNKNOWN" checked="true" /> Unknown
+				<input type="checkbox" name="networkType" value="NETWORK_TYPE_EDGE" checked="true" /> <b><font color="#00BC16">Edge</b></font>
+				<input type="checkbox" name="networkType" value="NETWORK_TYPE_GPRS" checked="true" /> <b><font color="#0026FF">GPRS</b></font> 
+				<input type="checkbox" name="networkType" value="NETWORK_TYPE_UMTS" checked="true" /> <b><font color="#FF0000">UMTS</b></font>
+				<input type="checkbox" name="networkType" value="NETWORK_TYPE_UNKNOWN" checked="true" /> <b><font color="#FFD800">Unknown</b></font>
 				
 				<br /><br />
 				<input type="button" value ="Redraw map" onclick="redrawMap()" />				
