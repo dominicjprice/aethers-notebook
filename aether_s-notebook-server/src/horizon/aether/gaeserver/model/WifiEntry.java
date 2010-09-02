@@ -80,7 +80,6 @@ public class WifiEntry {
      * Default constructor.
      */
     public WifiEntry() {
-        super();
         this.networks = new ArrayList<Wifi>();
     }
 

@@ -10,8 +10,8 @@ import android.net.NetworkInfo;
 /**
  * ConnectivityReceiver is a broadcast receiver that listens to the 
  * CONNECTIVITY_CHANGE intent and notifies the UploadingService
- * if there's a new connection established with (according to
- * the user's preferences).
+ * if there's a new connection established (according to the
+ * user's preferences).
  */
 public class ConnectivityReceiver extends BroadcastReceiver {
     

@@ -53,7 +53,6 @@ public class CrowdController {
 
     /**
      * GET requests return empty page.
-     * @return
      */
     @RequestMapping(value = "/crowd/*", method = RequestMethod.GET)
     public String showCrowdGetScreen() {
