@@ -25,13 +25,16 @@ public class FileUtils {
         } 
         else {
             File[] files = dir.listFiles();
-
-            for (File file : files) {
-                if (file.isFile()) {
-                    size += file.length();
-                } 
-                else {
-                    size += getDirSize(file);
+            
+            if(files != null)
+            {
+                for (File file : files) {
+                    if (file.isFile()) {
+                        size += file.length();
+                    } 
+                    else {
+                        size += getDirSize(file);
+                    }
                 }
             }
         }
