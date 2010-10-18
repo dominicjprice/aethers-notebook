@@ -34,18 +34,6 @@ implements LocationListener
 			@Override
 			public void onSignalStrengthChanged(int asu)
 			{
-				/*
-				JSONStringer data = new JSONStringer();
-				try 
-				{
-					data.object();
-					data.key("strength");
-					data.value(asu);
-					data.endObject();
-				}
-				catch (JSONException e){}
-				log(data.toString());
-				*/
 				lastSignalStrength = asu;
 				TelephonyManager telMan = (TelephonyManager)getSystemService(TELEPHONY_SERVICE);
 				lastNetworkType = telMan.getNetworkType();
@@ -108,10 +96,24 @@ implements LocationListener
 			else
 				data.value(null);
 			
-			data.key("strength");
+			data.key("signalStrength");
 			data.value(this.lastSignalStrength);
-			data.key("network_type");
-			data.value(this.lastNetworkType);
+			data.key("networkType");
+			switch(this.lastNetworkType)
+			{
+				case TelephonyManager.NETWORK_TYPE_EDGE:
+					data.value("NETWORK_TYPE_EDGE");
+					break;
+				case TelephonyManager.NETWORK_TYPE_GPRS:
+					data.value("NETWORK_TYPE_GPRS");
+					break;
+				case TelephonyManager.NETWORK_TYPE_UMTS:
+					data.value("NETWORK_TYPE_UMTS");
+					break;
+				case TelephonyManager.NETWORK_TYPE_UNKNOWN:
+				default:
+					data.value("NETWORK_TYPE_UNKNOWN");	
+			}
 			data.endObject();
 		}
 		catch(JSONException e)
