@@ -72,7 +72,7 @@ public class JspUtils {
                     double lat = entry.getLocation().getLatitude();
                     double lon = entry.getLocation().getLongitude();
                     int acc = (int) (entry.getLocation().getAccuracy());
-                    int strength = entry.getStrength();
+                    int strength = entry.getSignalStrength();
                     String colour = getSignalColour(strength);
                     if (colour != null) {
                         r.append(drawTheCircle(lat, lon, acc, colour));

@@ -26,8 +26,12 @@ public class SignalStrengthEntry {
     private Location location;
 
     @Persistent
-    private int strength;
+    private int signalStrength;
 
+    @Persistent
+    private String networkType;
+
+    
     /**
      * Gets the key.
      * @return
@@ -47,16 +51,29 @@ public class SignalStrengthEntry {
     public Location getLocation() { return this.location; }
 
     /**
-     * Gets the strength.
-     * @return The strength.
+     * Gets the signal strength.
+     * @return The signal strength.
      */
-    public int getStrength() { return this.strength; }
+    public int getSignalStrength() { return this.signalStrength; }
 
     /**
-     * Sets the strength.
-     * @param strength
+     * Sets the signal strength.
+     * @param signal strength
      */
-    public void setStrength(int strength) { this.strength = strength; }
+    public void setSignalStrength(int strength) { this.signalStrength = strength; }
+
+    /**
+     * Gets the network type.
+     * @return The network type.
+     */
+    public String getNetworkType() { return this.networkType; }
+
+    /**
+     * Sets the network type.
+     * @param network type
+     */
+    public void setNetworkType(String networkType) { this.networkType = networkType; }
+
     
     /**
      * Constructor.
@@ -64,10 +81,11 @@ public class SignalStrengthEntry {
      * @param location
      * @param strength
      */
-    public SignalStrengthEntry(long timestamp, Location location, int strength) {
+    public SignalStrengthEntry(long timestamp, Location location, int signalStrength, String networkType) {
         this.timestamp = timestamp;
         this.location = location;        
-        this.strength = strength;
+        this.signalStrength = signalStrength;
+        this.networkType = networkType;
     }
     
     /**
@@ -79,11 +97,23 @@ public class SignalStrengthEntry {
     public SignalStrengthEntry(long timestamp, Location location, SignalStrengthBlob blob) {
         this.timestamp = timestamp;
         this.location = location;
-        this.strength = blob.getStrength();
+        this.signalStrength = blob.getSignalStrength();
     }
     
     /**
      * Default constructor.
      */
     public SignalStrengthEntry() { }
+    
+    /**
+     * Returns a string representation of the object.
+     */
+    @Override
+    public String toString() {
+        StringBuffer sb = new StringBuffer();
+        sb.append(networkType);
+        sb.append("_");
+        sb.append(signalStrength);
+        return sb.toString();
+    }
 }
