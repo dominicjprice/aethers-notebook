@@ -84,7 +84,7 @@ public class PrefsUtils {
      * @return The archives directory path.
      */
     public static String getArchivesDir(String dir) {
-        return FileUtils.fixDirPath(dir) + "archives/";
+        return FileUtils.fixDirPath(dir);
     }
     
     /**

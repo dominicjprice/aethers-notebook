@@ -66,31 +66,26 @@
 </head>
 
 
-<body onload="initialize();">
-	<table align="center" width="1000">
-		<tr align="center"><td>
-			<h1>Telephony State Map</h1>
-		</tr></td>
-		
-		<tr><td>
+<body>
+	<div id='header'>
+		<h1 align='center'>Telephony State Map</h1>
+		<div>
 			<form>
 				Network type: <br />
 				<input type="checkbox" name="networkType" value="NETWORK_TYPE_EDGE" checked="true" /> <b><font color="#00BC16">Edge</b></font>
 				<input type="checkbox" name="networkType" value="NETWORK_TYPE_GPRS" checked="true" /> <b><font color="#0026FF">GPRS</b></font> 
 				<input type="checkbox" name="networkType" value="NETWORK_TYPE_UMTS" checked="true" /> <b><font color="#FF0000">UMTS</b></font>
 				<input type="checkbox" name="networkType" value="NETWORK_TYPE_UNKNOWN" checked="true" /> <b><font color="#FFD800">Unknown</b></font>
-				
-				<br /><br />
+				<br />
+				<br />
 				<input type="button" value ="Redraw map" onclick="redrawMap()" />				
 			</form>
-		</td></tr>
-		
-		<tr><td>
-			<br /> <br />
-			<div align="center" id="map-canvas" style="width:1100px; height:600px"></div>
-		</td></tr>
-		
-	</table>
+		</div>
+	</div>
+
+	<div id='map-canvas'></div>
+	
+	<div id='footer' style='display:none;'></div>	
 	
 </body>
 

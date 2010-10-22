@@ -166,9 +166,15 @@ extends Service {
         boolean gotFiles = false;
         synchronized(LockManager.logArchivesDirLock) {
             File dir = new File(PrefsUtils.getArchivesDir(this));
-        
+            
+            Toast t = Toast.makeText(getApplicationContext(), PrefsUtils.getArchivesDir(this), Toast.LENGTH_SHORT);
+            t.show();
+            
             if (dir.exists()) {
                 File[] files = dir.listFiles();
+                t.setText("files found");
+                t.show();
+                
                 if (files.length > 0) {
                     gotFiles = true;
                 }

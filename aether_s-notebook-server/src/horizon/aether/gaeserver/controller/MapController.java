@@ -83,6 +83,9 @@ public class MapController {
         // draw
         String result = JspUtils.drawDataConnectionStateMap(entries);
         result += "\ncursorStr = '" + cursorString + "';";
+        result += "\n$('#footer').html('" + entries.size() + " entries processed');";
+        result += "\n$('#footer').show();";
+        result += "\nonWindowResized();";
         result += "\ndrawMore();";
 
         // and return

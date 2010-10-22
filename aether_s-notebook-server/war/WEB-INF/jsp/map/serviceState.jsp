@@ -75,36 +75,29 @@
 </head>
 
 
-<body onload="initialize();">
-	<table align="center" width="1000">
-		<tr align="center"><td>
-			<h1> Service State Map </h1>
-		</tr></td>
+<body>
+  <div id='header'>
+  	<h1 align='center'>Service State Map</h1></div>
+	<div>
+		<form>
+			Operator: <input name="txtOperator" /> <br/>
+			Roaming: 
+			<select name="lstRoaming" id="lstRoaming">
+				<option value="1">Doesn't matter</option>
+				<option value="2">Must be on</option>
+				<option value="3">Must be off</option>
+			</select>
+			<br />
+			<br />
+			<input type="button" value ="Redraw map" onclick="redrawMap()" />				
+		</form>
+	</div>
+  </div>
+  		
+  <div id='map-canvas'></div>
 		
-		<tr><td>
-			<form>
-				Operator: 
-				<input name="txtOperator" /> <br/>
-				
-				Roaming: 
-				<select name="lstRoaming" id="lstRoaming">
-					<option value="1">Doesn't matter</option>
-					<option value="2">Must be on</option>
-					<option value="3">Must be off</option>
-				</select>
-				
-				<br /><br />
-				<input type="button" value ="Redraw map" onclick="redrawMap()" />				
-			</form>
-		</td></tr>
-		
-		<tr><td>
-			<br /> <br />
-			<div align="center" id="map-canvas" style="width:1100px; height:600px"></div>
-		</td></tr>
-		
-	</table>
-	
+  <div id='footer' style='display:none;'></div>
+  
 </body>
 
 </html>

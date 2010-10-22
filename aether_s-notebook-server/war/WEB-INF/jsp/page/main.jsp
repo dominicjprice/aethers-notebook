@@ -12,19 +12,25 @@
 	</head>
 	
 	<body align="center">
-		<br /><br /><br />
-		<div style="text-align: center; border: 2px solid #4750FF; width: 300px; height: 250px; background-color: #E0E2FF; position:relative; margin: 0 auto;">
-			<br /> <br />
+		<div style="text-align:center;border:2px solid #4750FF;background-color:#E0E2FF;position:relative;margin-left:auto;margin-right:auto;margin-top:30px;padding-top:10px;">
 			<h2>List of available maps</h2>
 			<h3>
-				<a href="/a/map/dataConnectionState">Data connection state</a> <br />
-				<a href="/a/map/serviceState">Service state</a> <br />
-				<a href="/a/map/signalStrength">Signal strength</a> <br />
-				<a href="/a/map/telephonyState">Telephony state</a> <br />
+				<div><a href="/a/map/dataConnectionState">Data connection state</a> </div>
+				<div><a href="/a/map/serviceState">Service state</a> </div>
+				<div><a href="/a/map/signalStrength">Signal strength</a> </div>
+				<div><a href="/a/map/telephonyState">Telephony state</a> </div>
 			</h3>			
+			<h2>Upload log files:</h2>
+			<div>
+				<form action='/a/crowd/' method='POST'>
+					<div>Compressed log file: <input type='file' name='uploadedfile'></div>
+					<input type='submit' value='Go'>
+				</form>
+				<form>
+					<div>Uncompressed log file: <input type='file' name='file-uncompressed'></div>
+					<input type='submit' value='Go'>
+				</form>
+			</div>
 		</div>
-		<br />
-		
 	</body>
-
 </html>

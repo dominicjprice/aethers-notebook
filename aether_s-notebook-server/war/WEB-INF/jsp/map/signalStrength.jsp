@@ -43,21 +43,12 @@
 
 </head>
 
-<body onload="initialize();">
-
-	<table align="center" width="1000">
+<body>
+	<div id='header'><h1 align='center'>Signal Strength Map</h1></div>
 	
-		<tr align="center"><td>
-			<h1>Signal Strength Map</h1>
-		</tr></td>
-				
-		<tr><td>
-			<br />
-			<div align="center" id="map-canvas" style="width:1100px; height:600px"></div>
-		</td></tr>
-		
-	</table>
+	<div id='map-canvas'></div>
 	
+	<div id='footer' style='display:none;'></div>	
 </body>
 
 </html>
