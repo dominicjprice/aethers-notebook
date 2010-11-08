@@ -22,12 +22,12 @@
 			</h3>			
 			<h2>Upload log files:</h2>
 			<div>
-				<form action='/a/crowd/' method='POST'>
-					<div>Compressed log file: <input type='file' name='uploadedfile'></div>
+				<form action='/a/crowd/' method='POST' enctype='multipart/form-data'>
+					<div>Compressed log file: <input type='file' name='compressedfile'></div>
 					<input type='submit' value='Go'>
 				</form>
-				<form>
-					<div>Uncompressed log file: <input type='file' name='file-uncompressed'></div>
+				<form action='/a/crowd/' method='POST' enctype='multipart/form-data'>
+					<div>Uncompressed log file: <input type='file' name='uncompressedfile'></div>
 					<input type='submit' value='Go'>
 				</form>
 			</div>

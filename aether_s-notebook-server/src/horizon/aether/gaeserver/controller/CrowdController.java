@@ -35,6 +35,7 @@ import org.apache.commons.fileupload.FileItemStream;
 import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.codehaus.jackson.JsonParseException;
+import org.codehaus.jackson.map.DeserializationConfig;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.type.TypeFactory;
@@ -67,22 +68,46 @@ public class CrowdController {
      * @return an empty response
      */
     @RequestMapping(value = "/crowd/*", method = RequestMethod.POST)
-    public String showCrowdPostScreen(HttpServletRequest req) {
-        try {
-            // receive file
+    public String showCrowdPostScreen(HttpServletRequest req)
+    {
+        try
+        {
+        	// Look at all the submitted parts of the post data and process files as necessary
             ServletFileUpload upload = new ServletFileUpload();
             FileItemIterator iterator = upload.getItemIterator(req);
-            while (iterator.hasNext()) {
+            while (iterator.hasNext())
+            {
                 FileItemStream item = iterator.next();
                 InputStream stream = item.openStream();
 
-                if (!item.isFormField()) {
-                    // uncompress
+                // Form fields will be returned too, but Files are only important
+                if (!item.isFormField())
+                {
+                	// The uncompressed file can also be uploaded by naming the file upload field
+                	// 'uncompressed' - otherwise assume it's compressed... 
+                	boolean needToUncompress = true;
+                	if(item.getFieldName().contentEquals("uncompressedfile"))
+                	{
+                		needToUncompress = false;
+                	}
+
                     OutputStream uncompressedStream = new ByteArrayOutputStream();
-                    if (!CompressionUtils.uncompress(stream, uncompressedStream)) {
-                        throw new ServletException("Failed to uncompress file");
+                    if(needToUncompress)
+                    {
+	                	// uncompress
+	                    if (!CompressionUtils.uncompress(stream, uncompressedStream))
+	                    {
+	                        throw new ServletException("Failed to uncompress file");
+	                    }
+                    }  
+                    else
+                    {
+                    	int readByte;
+                    	while((readByte = stream.read()) != -1)
+                    	{
+                    		uncompressedStream.write(readByte);
+                    	}
                     }
-                                            
                     // parse and persist file entries
                     parseAndPersistEntries(uncompressedStream.toString());
                 }
@@ -110,6 +135,7 @@ public class CrowdController {
     @SuppressWarnings("unchecked")
     public static void parseAndPersistEntries(String contents) {
         ObjectMapper mapper = new ObjectMapper();
+        mapper.configure(DeserializationConfig.Feature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         
         PersistenceManager pm = PMF.get().getPersistenceManager();
         

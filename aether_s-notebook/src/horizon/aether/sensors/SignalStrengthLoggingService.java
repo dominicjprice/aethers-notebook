@@ -56,6 +56,8 @@ implements LocationListener
 		try
 		{
 			data.object();
+			/** These aren't needed since location is added to every log entry automatically **/
+			/*
 			data.key("accuracy");
 			if(location.hasAccuracy())
 				data.value(location.getAccuracy());
@@ -95,7 +97,7 @@ implements LocationListener
 				data.value(extras.toString());
 			else
 				data.value(null);
-			
+			*/
 			data.key("signalStrength");
 			data.value(this.lastSignalStrength);
 			data.key("networkType");

@@ -11,5 +11,7 @@
        <property name="javax.jdo.option.NontransactionalWrite" value="true"/>
        <property name="javax.jdo.option.RetainValues" value="true"/>
        <property name="datanucleus.appengine.autoCreateDatastoreTxns" value="true"/>
+       <property name="javax.jdo.option.DatastoreReadTimeoutMillis" value="5000" />
+       <property name="javax.jdo.option.DatastoreWriteTimeoutMillis" value="100000" />
    </persistence-manager-factory>
 </jdoconfig>
