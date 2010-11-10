@@ -12,10 +12,11 @@ function drawCircle(map, x, y, accuracy, colour) {
 	center: centerLatLng, 
 	clickable: false, 
 	fillColor: colour,
-	fillOpacity: 0.75, 
+	fillOpacity: 0.50, 
 	map: map, 
 	radius: accuracy, 
 	strokeColor: colour, 
+	strokeOpacity: 1,
 	strokeWeight: 1 
   }; 
 

@@ -116,6 +116,9 @@ public class MapController {
         // set new cursor
         String newCursorString  = (entries.size() > 0) ? JDOCursorHelper.getCursor(entries).toWebSafeString() : "null";
         result += "\ncursorStr = '" + newCursorString + "';";
+        result += "\n$('#footer').html('" + entries.size() + " entries processed');";
+        result += "\n$('#footer').show();";
+        result += "\nonWindowResized();";
         result += "\ndrawMore();";
 
         // finalise
@@ -172,6 +175,9 @@ public class MapController {
         // draw
         String result = JspUtils.drawSignalStrengthMap(entries);
         result += "\ncursorStr = '" + cursorString + "';";
+        result += "\n$('#footer').html('" + entries.size() + " entries processed');";
+        result += "\n$('#footer').show();";
+        result += "\nonWindowResized();";
         result += "\ndrawMore();";
 
         // and return
@@ -202,6 +208,9 @@ public class MapController {
         // set new cursor
         String newCursorString  = (entries.size() > 0) ? JDOCursorHelper.getCursor(entries).toWebSafeString() : "null";
         result += "\ncursorStr = '" + newCursorString + "';";
+        result += "\n$('#footer').html('" + entries.size() + " entries processed');";
+        result += "\n$('#footer').show();";
+        result += "\nonWindowResized();";
         result += "\ndrawMore();";
 
         // finalise
@@ -251,6 +260,9 @@ public class MapController {
         // draw
         String result = JspUtils.drawServiceStateMap(entries);        
         result += "\ncursorStr = '" + cursorString + "';";
+        result += "\n$('#footer').html('" + entries.size() + " entries processed');";
+        result += "\n$('#footer').show();";
+        result += "\nonWindowResized();";
         result += "\ndrawMore();";
 
         // and return
@@ -280,6 +292,9 @@ public class MapController {
         // set new cursor
         String newCursorString  = (entries.size() > 0) ? JDOCursorHelper.getCursor(entries).toWebSafeString() : "null";
         result += "\ncursorStr = '" + newCursorString + "';";
+        result += "\n$('#footer').html('" + entries.size() + " entries processed');";
+        result += "\n$('#footer').show();";
+        result += "\nonWindowResized();";
         result += "\ndrawMore();";
 
         // and return
@@ -324,6 +339,9 @@ public class MapController {
         // draw      
         String result = JspUtils.drawTelephonyStateMap(entries);
         result += "\ncursorStr = '" + cursorString + "';";
+        result += "\n$('#footer').html('" + entries.size() + " entries processed');";
+        result += "\n$('#footer').show();";
+        result += "\nonWindowResized();";
         result += "\ndrawMore();";
 
         return result;
@@ -351,6 +369,9 @@ public class MapController {
         // set new cursor
         String newCursorString  = (entries.size() > 0) ? JDOCursorHelper.getCursor(entries).toWebSafeString() : "null";
         result += "\ncursorStr = '" + newCursorString + "';";
+        result += "\n$('#footer').html('" + entries.size() + " entries processed');";
+        result += "\n$('#footer').show();";
+        result += "\nonWindowResized();";
         result += "\ndrawMore();";
 
         // and return

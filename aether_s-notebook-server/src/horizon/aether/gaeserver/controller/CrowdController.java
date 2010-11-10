@@ -25,6 +25,7 @@ import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.logging.Logger;
+import java.util.zip.GZIPInputStream;
 
 import javax.jdo.PersistenceManager;
 import javax.servlet.ServletException;
@@ -52,6 +53,10 @@ public class CrowdController {
     
     private static final Logger log = Logger.getLogger(CrowdController.class.getName());
 
+    public enum UploadCompressionType {
+    	 NONE, GZIP, DEFAULT;
+    }
+    
     /**
      * GET requests return empty page.
      */
@@ -85,28 +90,52 @@ public class CrowdController {
                 {
                 	// The uncompressed file can also be uploaded by naming the file upload field
                 	// 'uncompressed' - otherwise assume it's compressed... 
-                	boolean needToUncompress = true;
+                	UploadCompressionType compressionType = UploadCompressionType.DEFAULT;
                 	if(item.getFieldName().contentEquals("uncompressedfile"))
                 	{
-                		needToUncompress = false;
+                		compressionType = UploadCompressionType.NONE;
                 	}
+                	else if (item.getFieldName().contentEquals("gzippedfile"))
+                	{
+                		compressionType = UploadCompressionType.GZIP;
+                	}
+                	
 
                     OutputStream uncompressedStream = new ByteArrayOutputStream();
-                    if(needToUncompress)
+                    switch(compressionType)
                     {
+	                    case NONE:
+		                	int readByte;
+		                	while((readByte = stream.read()) != -1)
+		                	{
+		                		uncompressedStream.write(readByte);
+		                	}
+		                break;
+
+	                    case GZIP:
+	                    	try
+	                    	{
+		                    	GZIPInputStream gzipInputStream =  new GZIPInputStream(stream);
+		                    	int gzReadByte;
+				                while((gzReadByte = gzipInputStream.read()) != -1)
+			                	{
+			                		uncompressedStream.write(gzReadByte);
+			                	}
+				                gzipInputStream.close();
+	                    	}
+	                    	catch(IOException ex)
+	                    	{
+		                        throw new ServletException("Failed to uncompress file (gz)", ex);
+	                    	}
+	                    break;
+	                    
+                    	default:
 	                	// uncompress
 	                    if (!CompressionUtils.uncompress(stream, uncompressedStream))
 	                    {
-	                        throw new ServletException("Failed to uncompress file");
+	                        throw new ServletException("Failed to uncompress file (default)");
 	                    }
-                    }  
-                    else
-                    {
-                    	int readByte;
-                    	while((readByte = stream.read()) != -1)
-                    	{
-                    		uncompressedStream.write(readByte);
-                    	}
+	                    break;
                     }
                     // parse and persist file entries
                     parseAndPersistEntries(uncompressedStream.toString());

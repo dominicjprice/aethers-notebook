@@ -7,6 +7,9 @@ import javax.jdo.annotations.PrimaryKey;
 
 import com.google.appengine.api.datastore.Key;
 
+import horizon.aether.gaeserver.utilities.*;
+
+
 /**
  * Class that represents a Signal Strength Entry.
  */
@@ -14,6 +17,11 @@ import com.google.appengine.api.datastore.Key;
 public class SignalStrengthEntry {
     
     public static final String IDENTIFIER = "SIGNAL_STRENGTH";
+    
+    public static final String NETWORK_TYPE_EDGE = "NETWORK_TYPE_EDGE";
+    public static final String NETWORK_TYPE_GPRS = "NETWORK_TYPE_GPRS";
+    public static final String NETWORK_TYPE_UMTS = "NETWORK_TYPE_UMTS";
+    public static final String NETWORK_TYPE_UNKNOWN = "NETWORK_TYPE_UNKNOWN";
     
     @PrimaryKey
     @Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY)
@@ -43,6 +51,15 @@ public class SignalStrengthEntry {
      * @return
      */
     public long getTimestamp() { return this.timestamp; }
+    
+    /**
+     * Formats the timestamp to yyyy-mm-dd hh:mm:ss format
+     * @return
+     */
+    public String getDateTimeString()
+    {
+    	return StringUtils.toDateTimeString(this.timestamp);
+    }
     
     /**
      * Gets the location.
@@ -97,6 +114,7 @@ public class SignalStrengthEntry {
     public SignalStrengthEntry(long timestamp, Location location, SignalStrengthBlob blob) {
         this.timestamp = timestamp;
         this.location = location;
+        this.networkType = blob.getNetworkType();
         this.signalStrength = blob.getSignalStrength();
     }
     

@@ -7,7 +7,7 @@
 	<head>
 		<link rel="stylesheet" type="text/css" href="/css/styles.css" />
 		
-		<title>Aether's notebook</title>
+		<title>Aether's notebook ${message}</title>
 		
 	</head>
 	
@@ -28,6 +28,10 @@
 				</form>
 				<form action='/a/crowd/' method='POST' enctype='multipart/form-data'>
 					<div>Uncompressed log file: <input type='file' name='uncompressedfile'></div>
+					<input type='submit' value='Go'>
+				</form>
+				<form action='/a/crowd/' method='POST' enctype='multipart/form-data'>
+					<div>GZipped log file: <input type='file' name='gzippedfile'></div>
 					<input type='submit' value='Go'>
 				</form>
 			</div>

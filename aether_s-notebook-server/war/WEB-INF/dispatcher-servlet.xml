@@ -16,10 +16,14 @@
 	  
 	<!-- Page Controller -->
 	<bean class="horizon.aether.gaeserver.controller.PageController" />
-	 
+
 	<!-- Crowd Controller -->
 	<bean class="horizon.aether.gaeserver.controller.CrowdController" />
 	
 	<!-- Map Controller -->
 	<bean class="horizon.aether.gaeserver.controller.MapController" />
+
+	<!-- KML Controller -->
+	<bean class="horizon.aether.gaeserver.controller.KMLController" />
+ 
 </beans>

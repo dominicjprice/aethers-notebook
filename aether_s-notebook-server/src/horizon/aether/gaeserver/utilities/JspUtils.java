@@ -75,7 +75,7 @@ public class JspUtils {
                     int strength = entry.getSignalStrength();
                     String colour = getSignalColour(strength);
                     if (colour != null) {
-                        r.append(drawTheCircle(lat, lon, acc, colour));
+                        r.append(drawTheCircle(lat, lon, acc/10, colour));
                     }
                 }
             }
