@@ -34,13 +34,14 @@ public class KMLController {
 		// prepare query
 		PersistenceManager pm = PMF.get().getPersistenceManager();
 		Query query = pm.newQuery(SignalStrengthEntry.class);
-		query.setRange(5000, 5500);
+		//query.setRange(0, 6000);
 
 		// execute
 		List<SignalStrengthEntry> entries = (List<SignalStrengthEntry>) query.execute();
 
 		ModelAndView mAndV = new ModelAndView("kml/signalStrength");
-		mAndV.addObject("message", "Signal Strength");
+		mAndV.addObject("size", entries.size());
+		mAndV.addObject("message", "Signal Strength Entries");
 		mAndV.addObject("entries", entries);
 
 		// finalise

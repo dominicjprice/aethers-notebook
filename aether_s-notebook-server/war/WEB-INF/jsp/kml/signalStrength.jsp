@@ -109,13 +109,13 @@
 			</Style>
 		</Placemark>
 		<Folder id="track 1 points">
-			<name>GPS Points</name>		
-<c:forEach items="${entries}" var="entry">
-	<jsp:useBean id="dateValue" class="java.util.Date" />
-	<jsp:setProperty name="dateValue" property="time" value="${entry.timestamp}" />
-	<fmt:formatDate var="entrydate" value="${dateValue}"  pattern="yyyy-MM-dd" scope="request"/>
-	<fmt:formatDate var="entrytime" value="${dateValue}"  pattern="HH:mm:ss" scope="request"/>
-			<Placemark>
+			<name>${size} ${message}</name>		
+<c:forEach items="${entries}" var="entry"><%--
+	--%><jsp:useBean id="dateValue" class="java.util.Date" /><%--
+	--%><jsp:setProperty name="dateValue" property="time" value="${entry.timestamp}" /><%--
+	--%><fmt:formatDate var="entrydate" value="${dateValue}"  pattern="yyyy-MM-dd" scope="request"/><%--
+	--%><fmt:formatDate var="entrytime" value="${dateValue}"  pattern="HH:mm:ss" scope="request"/><%--
+--%>		<Placemark>
 				<Point>
 					<altitudeMode>clampToGround</altitudeMode>
 					<coordinates>${entry.location.longitude}, ${entry.location.latitude}</coordinates>
@@ -124,7 +124,7 @@
 				<name>${entrydate}T${entrytime}</name>
 				<description><![CDATA[<b>Signal Strength Reading</b><br/>
 				<i>Network Type:</i> ${entry.networkType}<br/>
-				<i>Signal Strength:</i> ${entry.signalStrength}&#176;<br/>
+				<i>Signal Strength:</i> ${entry.signalStrength}<br/>
 				<i>Latitude:</i> ${entry.location.latitude}&#176;<br/>
 				<i>Longitude:</i> ${entry.location.longitude}&#176;<br/>
 				<i>Elevation:</i> ${entry.location.altitude}m<br/>
@@ -136,8 +136,67 @@
 				<styleUrl>#gv_trackpoint</styleUrl>
 				<Snippet></Snippet>
 				<Style>
-					<IconStyle>
-						<color>FF0073E6</color>
+<%-- Work out the colour for the signal strength icon based on network type and strength.
+	 Signal strength is usually between 0 and 31, with 99 reserved for 'unknown' as follows:
+	    0 -113 dBm or less
+		1 -111 dBm
+		2...30 -109... -53 dBm
+		31 -51 dBm or greater
+		99 not known or not detectable
+	If it's unknown, then set colour specially otherwise go on to use network type and strength 
+--%><c:choose><%--
+--%>	<c:when test='(${entry.signalStrength==99})' ><%--
+--%>		<c:set var="colour" value="33FFFFFF" scope="page"/><%--
+--%>	</c:when><%--
+--%>	<c:otherwise><%--
+--%>		<c:choose><%--
+--%>			<c:when test='${entry.signalStrength==0}' ><%--
+--%>				<c:set var="colour" value="FF000000" scope="page"/><%--
+--%>			</c:when><%--
+--%>			<c:when test='${entry.signalStrength==1}' ><%--
+--%>				<c:set var="networkColour" value="33" scope="page"/><%--
+--%>			</c:when><%--
+--%>			<c:when test='${entry.signalStrength<5}' ><%--
+--%>				<c:set var="networkColour" value="40" scope="page"/><%--
+--%>			</c:when><%--
+--%>			<c:when test='${entry.signalStrength<10}' ><%--
+--%>				<c:set var="networkColour" value="50" scope="page"/><%--
+--%>			</c:when><%--
+--%>			<c:when test='${entry.signalStrength<15}' ><%--
+--%>				<c:set var="networkColour" value="70" scope="page"/><%--
+--%>			</c:when><%--
+--%>		<c:when test='${entry.signalStrength<20}' ><%--
+--%>				<c:set var="networkColour" value="90" scope="page"/><%--
+--%>			</c:when><%--
+--%>			<c:when test='${entry.signalStrength<25}' ><%--
+--%>				<c:set var="networkColour" value="BB" scope="page"/><%--
+--%>			</c:when><%--
+--%>			<c:when test='${entry.signalStrength<31}' ><%--
+--%>				<c:set var="networkColour" value="DD" scope="page"/><%--
+--%>			</c:when><%--
+--%>			<c:when test='${entry.signalStrength==31}' ><%--
+--%>				<c:set var="networkColour" value="FF" scope="page"/><%--
+--%>			</c:when><%--
+--%>		</c:choose><%--
+--%>	<c:choose><%--
+--%>		<c:when test='${entry.networkType == "NETWORK_TYPE_UMTS"}'><%--
+--%>			<c:set var="colour" value='FF${networkColour}0000' scope="page"/><%--
+--%>		</c:when><%--
+--%>			<c:when test='${entry.networkType == "NETWORK_TYPE_GPRS"}'><%--
+--%>				<c:set var="colour" value='FF00${networkColour}00' scope="page"/><%--
+--%>			</c:when><%--
+--%>			<c:when test='${entry.networkType == "NETWORK_TYPE_EDGE"}'><%--
+--%>				<c:set var="colour" value='FF0000${networkColour}' scope="page"/><%--
+--%>			</c:when><%--
+--%>			<c:otherwise><%--
+--%>				<%--  //NETWORK_TYPE_UNKNOWN  --%><%--
+--%>				<c:set var="colour" value='FFFFFFFF${networkColour}${networkColour}${networkColour}' scope="page"/><%--
+--%>			</c:otherwise><%--
+--%>		</c:choose><%--
+--%>	</c:otherwise><%--
+--%></c:choose><%--
+--%>					<IconStyle>
+						<color>${colour}</color>
 				 	</IconStyle>
 				 	<LabelStyle>
 						<color>FF0073E6</color>
@@ -148,7 +207,7 @@
 				 	</LineStyle>
 				</Style>
 			</Placemark>
-</c:forEach>
-		</Folder>
+</c:forEach><%--
+--%>		</Folder>
 	</Document>
 </kml>

@@ -7,12 +7,13 @@
 	<head>
 		<link rel="stylesheet" type="text/css" href="/css/styles.css" />
 		
-		<title>Aether's notebook ${message}</title>
+		<title>Aether's notebook</title>
 		
 	</head>
 	
 	<body align="center">
 		<div style="text-align:center;border:2px solid #4750FF;background-color:#E0E2FF;position:relative;margin-left:auto;margin-right:auto;margin-top:30px;padding-top:10px;">
+			<div>${message}</div>
 			<h2>List of available maps</h2>
 			<h3>
 				<div><a href="/a/map/dataConnectionState">Data connection state</a> </div>
@@ -35,6 +36,11 @@
 					<input type='submit' value='Go'>
 				</form>
 			</div>
+			<h2>DELETE ALL DATA!</h2>
+				<form action='/a/delete_all' method='POST'>
+					<input type='submit' value='DELETE DATA ALL RIGHT NOW'>
+				</form>
+			
 		</div>
 	</body>
 </html>
