@@ -5,48 +5,26 @@ package horizon.aether.gaeserver.model;
  */
 public class SignalStrengthBlob {
 
-    public static final String NETWORK_TYPE_EDGE = "NETWORK_TYPE_EDGE";
-    public static final String NETWORK_TYPE_GPRS = "NETWORK_TYPE_GPRS";
-    public static final String NETWORK_TYPE_UMTS = "NETWORK_TYPE_UMTS";
-    public static final String NETWORK_TYPE_UNKNOWN = "NETWORK_TYPE_UNKNOWN";
-
-    private int signalStrength;
-
-    private String networkType;
+    private int strength;
 
     /**
-     * Gets the signal strength.
-     * @return The signal strength.
+     * Gets the strength.
+     * @return The strength.
      */
-    public int getSignalStrength() { return this.signalStrength; }
+    public int getStrength() { return this.strength; }
 
     /**
-     * Gets the network type.
-     * @return The network type
+     * Sets the strength.
+     * @param strength
      */
-    public String getNetworkType() { return this.networkType; }
-
-    
-    /**
-     * Sets the signal strength.
-     * @param signal strength
-     */
-    public void setSignalStrength(int signalStrength) { this.signalStrength = signalStrength; }
-    
-    /**
-     * Sets the network type.
-     * @param networkType
-     */
-    public void setNetworkType(String networkType) { this.networkType = networkType; }
-
+    public void setStrength(int strength) { this.strength = strength; }
     
     /**
      * Constructor.
      * @param strength
      */
-    public SignalStrengthBlob(int signalStrength, String networkType) {
-        this.signalStrength = signalStrength;
-        this.networkType = networkType;
+    public SignalStrengthBlob(int strength) {
+        this.strength = strength;
     }
     
     /**

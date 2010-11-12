@@ -2,7 +2,7 @@ package horizon.aether.gaeserver.utilities;
 
 import horizon.aether.gaeserver.model.DataConnectionStateEntry;
 import horizon.aether.gaeserver.model.ServiceStateEntry;
-import horizon.aether.gaeserver.model.SignalStrengthEntry;
+import horizon.aether.gaeserver.model.SignalStrengthOnLocationChangeEntry;
 import horizon.aether.gaeserver.model.TelephonyStateEntry;
 
 import java.util.List;
@@ -63,11 +63,11 @@ public class JspUtils {
     /**
      * Draws a Signal Strength map.
      */
-    public static String drawSignalStrengthMap(List<SignalStrengthEntry> entries) {
+    public static String drawSignalStrengthMap(List<SignalStrengthOnLocationChangeEntry> entries) {
         StringBuffer r = new StringBuffer();
 
         if (entries.size() > 0) {
-            for (SignalStrengthEntry entry : entries) {
+            for (SignalStrengthOnLocationChangeEntry entry : entries) {
                 if (entry.getLocation() != null) {
                     double lat = entry.getLocation().getLatitude();
                     double lon = entry.getLocation().getLongitude();

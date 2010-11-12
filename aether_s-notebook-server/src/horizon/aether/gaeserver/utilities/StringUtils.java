@@ -1,7 +1,6 @@
 package horizon.aether.gaeserver.utilities;
 
 import java.util.Date;
-import java.util.Calendar;
 import java.text.SimpleDateFormat;
 /**
  * Class that provides static helper methods that deal

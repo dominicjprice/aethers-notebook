@@ -3,7 +3,7 @@ package horizon.aether.gaeserver.controller;
 import horizon.aether.gaeserver.PMF;
 import horizon.aether.gaeserver.model.DataConnectionStateEntry;
 import horizon.aether.gaeserver.model.ServiceStateEntry;
-import horizon.aether.gaeserver.model.SignalStrengthEntry;
+import horizon.aether.gaeserver.model.SignalStrengthOnLocationChangeEntry;
 import horizon.aether.gaeserver.model.TelephonyStateEntry;
 import horizon.aether.gaeserver.utilities.JspUtils;
 import horizon.aether.gaeserver.utilities.StringUtils;
@@ -149,11 +149,11 @@ public class MapController {
     public @ResponseBody String drawSignalStrength() {
         // prepare query
         PersistenceManager pm = PMF.get().getPersistenceManager();
-        Query query = pm.newQuery(SignalStrengthEntry.class);
+        Query query = pm.newQuery(SignalStrengthOnLocationChangeEntry.class);
         query.setRange(0, 100);
 
         // execute
-        List<SignalStrengthEntry> entries = (List<SignalStrengthEntry>) query.execute();
+        List<SignalStrengthOnLocationChangeEntry> entries = (List<SignalStrengthOnLocationChangeEntry>) query.execute();
 
         // get cursor
         String cursorString = "null";
@@ -195,12 +195,12 @@ public class MapController {
         Cursor cursor = Cursor.fromWebSafeString(cursorString);
         Map<String, Object> extensionMap = new HashMap<String, Object>();
         extensionMap.put(JDOCursorHelper.CURSOR_EXTENSION, cursor);
-        Query query = pm.newQuery(SignalStrengthEntry.class);
+        Query query = pm.newQuery(SignalStrengthOnLocationChangeEntry.class);
         query.setExtensions(extensionMap);
         query.setRange(0, 100);
 
         // execute
-        List<SignalStrengthEntry> entries = (List<SignalStrengthEntry>) query.execute();
+        List<SignalStrengthOnLocationChangeEntry> entries = (List<SignalStrengthOnLocationChangeEntry>) query.execute();
 
         // draw map
         String result = JspUtils.drawSignalStrengthMap(entries);

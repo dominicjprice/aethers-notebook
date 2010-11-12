@@ -1,7 +1,7 @@
 package horizon.aether.gaeserver.controller;
 
 import horizon.aether.gaeserver.PMF;
-import horizon.aether.gaeserver.model.SignalStrengthEntry;
+import horizon.aether.gaeserver.model.SignalStrengthOnLocationChangeEntry;
 
 import java.util.List;
 
@@ -33,11 +33,11 @@ public class KMLController {
     public ModelAndView signalStrength() {
 		// prepare query
 		PersistenceManager pm = PMF.get().getPersistenceManager();
-		Query query = pm.newQuery(SignalStrengthEntry.class);
+		Query query = pm.newQuery(SignalStrengthOnLocationChangeEntry.class);
 		//query.setRange(0, 6000);
 
 		// execute
-		List<SignalStrengthEntry> entries = (List<SignalStrengthEntry>) query.execute();
+		List<SignalStrengthOnLocationChangeEntry> entries = (List<SignalStrengthOnLocationChangeEntry>) query.execute();
 
 		ModelAndView mAndV = new ModelAndView("kml/signalStrength");
 		mAndV.addObject("size", entries.size());
@@ -57,10 +57,10 @@ public class KMLController {
     	ModelAndView mAndV = new ModelAndView("kml/stats");
 		// prepare query
 		PersistenceManager pm = PMF.get().getPersistenceManager();
-		Query query = pm.newQuery(SignalStrengthEntry.class);
+		Query query = pm.newQuery(SignalStrengthOnLocationChangeEntry.class);
 		query.setRange(0, 500);
 		// execute
-		List<SignalStrengthEntry> entries = (List<SignalStrengthEntry>) query.execute();
+		List<SignalStrengthOnLocationChangeEntry> entries = (List<SignalStrengthOnLocationChangeEntry>) query.execute();
 		String statsString = "Points of data: " + entries.size(); 
 
 		// finalise

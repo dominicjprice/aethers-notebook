@@ -30,8 +30,8 @@ public class PageController {
     public ModelAndView deleteAll() {
     	PersistenceManager pm = PMF.get().getPersistenceManager();
 
-    	Query query = pm.newQuery(SignalStrengthEntry.class);
-    	List<SignalStrengthEntry> sseList = (List<SignalStrengthEntry>) query.execute();
+    	Query query = pm.newQuery(SignalStrengthOnLocationChangeEntry.class);
+    	List<SignalStrengthOnLocationChangeEntry> sseList = (List<SignalStrengthOnLocationChangeEntry>) query.execute();
     	pm.deletePersistentAll(sseList);
 
     	query = pm.newQuery(Location.class);

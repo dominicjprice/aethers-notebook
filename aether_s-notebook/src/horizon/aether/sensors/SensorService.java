@@ -38,7 +38,7 @@ extends Service
         loggingServices.add(new LoggingServiceDescriptor("WiFi", "WiFi", WifiLoggingService.class));
         loggingServices.add(new LoggingServiceDescriptor("Cell Location", "Cell Location", CellLocationLoggingService.class));
         loggingServices.add(new LoggingServiceDescriptor("Data Connection", "Data Connection", DataConnectionStateLoggingService.class));
-        loggingServices.add(new LoggingServiceDescriptor("Signal Strength", "Signal Strength", SignalStrengthLoggingService.class));
+        loggingServices.add(new LoggingServiceDescriptor("Signal Strength", "Signal Strength", SignalStrengthOnLocationChangeLoggingService.class));
         loggingServices.add(new LoggingServiceDescriptor("Service State", "Service State", ServiceStateLoggingService.class));
         loggingServices.add(new LoggingServiceDescriptor("Telephony", "Telephony", TelephonyLoggingService.class));
     }
