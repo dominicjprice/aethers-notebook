@@ -5,8 +5,8 @@ import horizon.aether.gaeserver.model.DataConnectionStateEntry;
 import horizon.aether.gaeserver.model.ServiceStateEntry;
 import horizon.aether.gaeserver.model.SignalStrengthOnLocationChangeEntry;
 import horizon.aether.gaeserver.model.TelephonyStateEntry;
-import horizon.aether.gaeserver.utilities.JspUtils;
-import horizon.aether.gaeserver.utilities.StringUtils;
+import horizon.aether.utilities.JspUtils;
+import horizon.aether.utilities.StringUtils;
 
 import java.util.HashMap;
 import java.util.List;

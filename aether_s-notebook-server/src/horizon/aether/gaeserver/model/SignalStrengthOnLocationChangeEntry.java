@@ -7,7 +7,7 @@ import javax.jdo.annotations.PrimaryKey;
 
 import com.google.appengine.api.datastore.Key;
 
-import horizon.aether.gaeserver.utilities.*;
+import horizon.aether.utilities.*;
 
 
 /**

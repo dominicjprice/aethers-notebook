@@ -190,7 +190,7 @@
 --%>			</c:when><%--
 --%>			<c:otherwise><%--
 --%>				<%--  //NETWORK_TYPE_UNKNOWN  --%><%--
---%>				<c:set var="colour" value='FFFFFFFF${networkColour}${networkColour}${networkColour}' scope="page"/><%--
+--%>				<c:set var="colour" value='FF${networkColour}${networkColour}${networkColour}' scope="page"/><%--
 --%>			</c:otherwise><%--
 --%>		</c:choose><%--
 --%>	</c:otherwise><%--
@@ -202,7 +202,7 @@
 						<color>FF0073E6</color>
 				 	</LabelStyle>
 				 	<LineStyle>
-						<color>990073E6</color>
+						<color>000073E6</color>
 						<width>2</width>
 				 	</LineStyle>
 				</Style>

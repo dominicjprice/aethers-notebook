@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/sensorlog2sql"/>
+	<classpathentry kind="lib" path="C:/Users/pszmp/Documents/Rural Divide/Aether-s-Notebook/jars/asm-3.3.jar"/>
+	<classpathentry kind="lib" path="C:/Users/pszmp/Documents/Rural Divide/Aether-s-Notebook/jars/datanucleus-core-2.2.0-m3.jar"/>
+	<classpathentry kind="lib" path="C:/Users/pszmp/Documents/Rural Divide/Aether-s-Notebook/jars/datanucleus-enhancer-2.1.2.jar"/>
+	<classpathentry kind="lib" path="C:/Users/pszmp/Documents/Rural Divide/Aether-s-Notebook/jars/datanucleus-rdbms-2.2.0-m3.jar"/>
+	<classpathentry kind="lib" path="C:/Users/pszmp/Documents/Rural Divide/Aether-s-Notebook/jars/jackson-all-1.6.2.jar"/>
+	<classpathentry kind="lib" path="C:/Users/pszmp/Documents/Rural Divide/Aether-s-Notebook/jars/jdo2-api-2.3-eb.jar"/>
+	<classpathentry kind="lib" path="C:/Users/pszmp/Documents/Rural Divide/Aether-s-Notebook/jars/mysql-connector-java-5.1.13-bin.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/aether_s-notebook-server"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

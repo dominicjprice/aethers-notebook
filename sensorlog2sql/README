@@ -1,0 +1,169 @@
+An app to take aether's notebook log files and import them into a (my)sql database.
+
+Here are the table setup statements:
+
+-- phpMyAdmin SQL Dump
+-- version 3.2.4
+-- http://www.phpmyadmin.net
+--
+-- Host: localhost
+-- Generation Time: Nov 12, 2010 at 05:32 PM
+-- Server version: 5.1.41
+-- PHP Version: 5.3.1
+
+SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
+
+--
+-- Database: `aether`
+--
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `accesspoint`
+--
+
+CREATE TABLE IF NOT EXISTS `accesspoint` (
+  `datetime` datetime NOT NULL,
+  `BSSID` varchar(128) DEFAULT NULL,
+  `SSID` varchar(128) DEFAULT NULL,
+  `capabilities` varchar(512) DEFAULT NULL,
+  `frequency` int(11) DEFAULT NULL,
+  `level` int(11) DEFAULT NULL,
+  PRIMARY KEY (`datetime`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `accesspointsiting`
+--
+
+CREATE TABLE IF NOT EXISTS `accesspointsiting` (
+  `datetime` datetime NOT NULL,
+  PRIMARY KEY (`datetime`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `dataconnectionstate`
+--
+
+CREATE TABLE IF NOT EXISTS `dataconnectionstate` (
+  `datetime` datetime NOT NULL,
+  `state` varchar(128) DEFAULT NULL,
+  PRIMARY KEY (`datetime`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `gsmcelllocation`
+--
+
+CREATE TABLE IF NOT EXISTS `gsmcelllocation` (
+  `datetime` datetime NOT NULL,
+  `cid` varchar(64) DEFAULT NULL,
+  `lac` varchar(64) DEFAULT NULL,
+  PRIMARY KEY (`datetime`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `location`
+--
+
+CREATE TABLE IF NOT EXISTS `location` (
+  `datetime` datetime NOT NULL,
+  `accuracy` double DEFAULT NULL,
+  `altitude` double DEFAULT NULL,
+  `bearing` double DEFAULT NULL,
+  `latitude` double DEFAULT NULL,
+  `longitude` double DEFAULT NULL,
+  `provider` varchar(128) DEFAULT NULL,
+  `speed` int(11) DEFAULT NULL,
+  `extras` varchar(512) DEFAULT NULL,
+  PRIMARY KEY (`datetime`),
+  KEY `latitude` (`latitude`,`longitude`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `neighbouringcellinfo`
+--
+
+CREATE TABLE IF NOT EXISTS `neighbouringcellinfo` (
+  `TelephonyState_row` int(11) NOT NULL,
+  `cid` int(11) DEFAULT NULL,
+  `rssi` int(11) DEFAULT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `servicestate`
+--
+
+CREATE TABLE IF NOT EXISTS `servicestate` (
+  `datetime` datetime NOT NULL,
+  `operatorAlphaLong` varchar(256) DEFAULT NULL,
+  `operatorAlphaShort` varchar(256) DEFAULT NULL,
+  `operatorNumeric` varchar(256) DEFAULT NULL,
+  `roaming` varchar(256) DEFAULT NULL,
+  `state` varchar(256) DEFAULT NULL,
+  PRIMARY KEY (`datetime`),
+  KEY `operatorAlphaShort` (`operatorAlphaShort`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `signalstrength`
+--
+
+CREATE TABLE IF NOT EXISTS `signalstrength` (
+  `datetime` datetime NOT NULL,
+  `strength` int(11) DEFAULT NULL,
+  PRIMARY KEY (`datetime`),
+  KEY `strength` (`strength`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `signalstrengthonlocationchange`
+--
+
+CREATE TABLE IF NOT EXISTS `signalstrengthonlocationchange` (
+  `datetime` datetime NOT NULL,
+  `accuracy` double DEFAULT NULL,
+  `altitude` double DEFAULT NULL,
+  `bearing` double DEFAULT NULL,
+  `latitude` double DEFAULT NULL,
+  `longitude` double DEFAULT NULL,
+  `provider` varchar(128) DEFAULT NULL,
+  `speed` int(11) DEFAULT NULL,
+  `extras` varchar(512) DEFAULT NULL,
+  `networkType` varchar(128) DEFAULT NULL,
+  `signalStrength` int(11) DEFAULT NULL,
+  PRIMARY KEY (`datetime`),
+  KEY `latitude` (`latitude`,`longitude`),
+  KEY `networkType` (`networkType`,`signalStrength`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `telephonystate`
+--
+
+CREATE TABLE IF NOT EXISTS `telephonystate` (
+  `datetime` datetime NOT NULL,
+  `networkType` varchar(128) DEFAULT NULL,
+  PRIMARY KEY (`datetime`),
+  KEY `networkType` (`networkType`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+

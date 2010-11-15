@@ -8,13 +8,15 @@ import horizon.aether.gaeserver.model.DataConnectionStateEntry;
 import horizon.aether.gaeserver.model.Location;
 import horizon.aether.gaeserver.model.ServiceStateBlob;
 import horizon.aether.gaeserver.model.ServiceStateEntry;
+import horizon.aether.gaeserver.model.SignalStrengthBlob;
+import horizon.aether.gaeserver.model.SignalStrengthEntry;
 import horizon.aether.gaeserver.model.SignalStrengthOnLocationChangeBlob;
 import horizon.aether.gaeserver.model.SignalStrengthOnLocationChangeEntry;
 import horizon.aether.gaeserver.model.TelephonyStateBlob;
 import horizon.aether.gaeserver.model.TelephonyStateEntry;
 import horizon.aether.gaeserver.model.Wifi;
 import horizon.aether.gaeserver.model.WifiEntry;
-import horizon.aether.gaeserver.utilities.CompressionUtils;
+import horizon.aether.utilities.CompressionUtils;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
@@ -205,9 +207,15 @@ public class CrowdController {
                     ServiceStateBlob blob = (ServiceStateBlob) mapper.readValue(dataBlob, ServiceStateBlob.class);
                     pm.makePersistent(new ServiceStateEntry(timestamp, location, blob));
                 }
+                else if (identifier.equals(SignalStrengthEntry.IDENTIFIER)) {
+                    SignalStrengthBlob blob = (SignalStrengthBlob) mapper.readValue(dataBlob, SignalStrengthBlob.class);
+                    pm.makePersistent(new SignalStrengthEntry(timestamp, location, blob));
+                }
                 else if (identifier.equals(SignalStrengthOnLocationChangeEntry.IDENTIFIER)) {
                     SignalStrengthOnLocationChangeBlob blob = (SignalStrengthOnLocationChangeBlob) mapper.readValue(dataBlob, SignalStrengthOnLocationChangeBlob.class);
                     pm.makePersistent(new SignalStrengthOnLocationChangeEntry(timestamp, location, blob));
+                    SignalStrengthBlob blob2 = (SignalStrengthBlob) mapper.readValue(dataBlob, SignalStrengthBlob.class);
+                    pm.makePersistent(new SignalStrengthEntry(timestamp, location, blob2));
                 }
                 else if (identifier.equals(TelephonyStateEntry.IDENTIFIER)) {
                     TelephonyStateBlob blob = (TelephonyStateBlob) mapper.readValue(dataBlob, TelephonyStateBlob.class);
