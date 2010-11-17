@@ -1,11 +1,11 @@
 package horizon.aether.gaeserver.controller;
 
+import horizon.aether.gaeserver.JspUtils;
 import horizon.aether.gaeserver.PMF;
 import horizon.aether.gaeserver.model.DataConnectionStateEntry;
 import horizon.aether.gaeserver.model.ServiceStateEntry;
 import horizon.aether.gaeserver.model.SignalStrengthOnLocationChangeEntry;
 import horizon.aether.gaeserver.model.TelephonyStateEntry;
-import horizon.aether.utilities.JspUtils;
 import horizon.aether.utilities.StringUtils;
 
 import java.util.HashMap;

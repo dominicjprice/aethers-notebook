@@ -15,25 +15,32 @@ import horizon.aether.model.TelephonyStateBlob;
 import horizon.aether.model.TelephonyStateEntry;
 import horizon.aether.model.Wifi;
 import horizon.aether.model.WifiEntry;
+import horizon.aether.utilities.CompressionUtils;
+import horizon.aether.utilities.CompressionUtils.CompressionType;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedReader;
-import java.io.FileReader;
+import java.io.ByteArrayOutputStream;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.Properties;
-import java.util.logging.Logger;
 
 import javax.jdo.JDOHelper;
 import javax.jdo.PersistenceManager;
 import javax.jdo.PersistenceManagerFactory;
 
+import org.apache.log4j.BasicConfigurator;
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
 import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.DeserializationConfig;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.type.TypeFactory;
-
 
 public class SensorLog2sql
 {
@@ -42,6 +49,35 @@ public class SensorLog2sql
 	@SuppressWarnings("unchecked")
     public static void main(String[] args) throws Exception
 	{
+		CompressionType compressionType = CompressionType.NONE;    	
+    	/*if(args.length==0)
+    	{
+    		throw new Exception("No input file specified!");
+    	}
+    	String filenameArg = args[0];
+    	if(args.length > 1)
+    	{
+    		String compressionTypeArg = args[1];
+	    	if(compressionTypeArg.contentEquals("none"))
+	    	{
+	    		compressionType = CompressionType.NONE;
+	    	}
+	    	else if (compressionTypeArg.contentEquals("gz"))
+	    	{
+	    		compressionType = CompressionType.GZIP;
+	    	}
+	    	else if (compressionTypeArg.contentEquals("dfl"))
+	    	{
+	    		compressionType = CompressionType.DEFAULT;
+	    	}
+    	}
+    	String sourceFileName = filenameArg;*/
+    	String sourceFileName = "sensorservice.log";
+    	//Set up the log4j log to log to console
+		/* @TODO Change this to use the config file...*/
+    	BasicConfigurator.configure();
+		log.setLevel(Level.ERROR);
+		
 		Properties properties = new Properties();
 		properties.setProperty("javax.jdo.PersistenceManagerFactoryClass",
 		                "org.datanucleus.jdo.JDOPersistenceManagerFactory");
@@ -61,7 +97,11 @@ public class SensorLog2sql
         mapper.configure(DeserializationConfig.Feature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
         try {
-        	BufferedReader reader = new BufferedReader(new FileReader("sensorservice.log"));
+	    	BufferedInputStream stream = new BufferedInputStream(new FileInputStream(sourceFileName));
+	    	OutputStream uncompressedStream = new ByteArrayOutputStream();
+            CompressionUtils.uncompress(stream, uncompressedStream, compressionType);
+
+	        BufferedReader reader = new BufferedReader(new StringReader(uncompressedStream.toString()));            
             String strLine;
             
             while ((strLine = reader.readLine()) != null) {
@@ -115,13 +155,13 @@ public class SensorLog2sql
             }
         }
         catch (JsonParseException e) { 
-            log.warning(e.toString()); 
+            log.error(e.toString(), e); 
         }
         catch (JsonMappingException e) {
-            log.warning(e.toString());
+            log.error(e.toString(), e); 
         }
         catch (IOException e) {
-            log.warning(e.toString());
+            log.error(e.toString(), e); 
         }
 
         pm.close();

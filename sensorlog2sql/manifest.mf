@@ -1,0 +1,3 @@
+Manifest-Version: 1.0
+Main-Class: horizon.aether.SensorLog2sql.SensorLog2sql
+

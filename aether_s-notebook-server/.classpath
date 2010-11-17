@@ -115,5 +115,6 @@
 	<classpathentry kind="lib" path="war/WEB-INF/lib/jstl.jar"/>
 	<classpathentry kind="lib" path="C:/Users/pszmp/Documents/Rural Divide/Aether-s-Notebook/jars/datanucleus-enhancer-2.1.2.jar"/>
 	<classpathentry kind="lib" path="C:/Users/pszmp/Documents/Rural Divide/Aether-s-Notebook/jars/asm-3.3.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/aether_lib"/>
 	<classpathentry kind="output" path="war/WEB-INF/classes"/>
 </classpath>
