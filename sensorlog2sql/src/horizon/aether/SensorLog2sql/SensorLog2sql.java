@@ -138,12 +138,17 @@ public class SensorLog2sql
                     pm.makePersistent(new ServiceStateEntry(timestamp, location, blob));
                 }
                 else if (identifier.equals(SignalStrengthEntry.IDENTIFIER)) {
-/*                    SignalStrengthBlob blob = (SignalStrengthBlob) mapper.readValue(dataBlob, SignalStrengthBlob.class);
+                    SignalStrengthBlob blob = (SignalStrengthBlob) mapper.readValue(dataBlob, SignalStrengthBlob.class);
                     pm.makePersistent(new SignalStrengthEntry(timestamp, location, blob));
                 }
-                else if (identifier.equals(SignalStrengthOnLocationChangeEntry.IDENTIFIER)) {*/
+                else if (identifier.equals(SignalStrengthOnLocationChangeEntry.IDENTIFIER)) {
                     SignalStrengthOnLocationChangeBlob blob = (SignalStrengthOnLocationChangeBlob) mapper.readValue(dataBlob, SignalStrengthOnLocationChangeBlob.class);
-                    pm.makePersistent(new SignalStrengthOnLocationChangeEntry(timestamp, location, blob));
+                    // Use the location recorded by the OnLocationChange event for this instead of the geotagger app log.
+                    Location loc = new Location(blob.getAccuracy(), blob.getAltitude(), blob.getBearing(), blob.getLatitude(), blob.getLongitude(), 
+                    		blob.getProvider(), blob.getSpeed(), blob.getExtras()); 
+                    pm.makePersistent(new SignalStrengthOnLocationChangeEntry(timestamp, loc, blob));
+                    // Also create a SignalStrength entry as above with the normal location data
+                    // not sure whether this is useful but seems to be...
                     SignalStrengthBlob blob2 = new SignalStrengthBlob();
                     blob2.setStrength(blob.getSignalStrength());
                     pm.makePersistent(new SignalStrengthEntry(timestamp, location, blob2));
