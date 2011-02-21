@@ -16,10 +16,10 @@ import horizon.aether.gaeserver.model.Wifi;
 import horizon.aether.gaeserver.model.WifiEntry;
 import horizon.aether.gaeserver.utilities.CompressionUtils;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.StringReader;
 import java.util.ArrayList;
@@ -33,7 +33,6 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.fileupload.FileItemIterator;
 import org.apache.commons.fileupload.FileItemStream;
-import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.DeserializationConfig;
@@ -83,72 +82,55 @@ public class CrowdController {
             while (iterator.hasNext())
             {
                 FileItemStream item = iterator.next();
-                InputStream stream = item.openStream();
+                BufferedInputStream stream = new BufferedInputStream(item.openStream());
 
                 // Form fields will be returned too, but Files are only important
-                if (!item.isFormField())
+                if(item.isFormField())
+                    continue;
+                
+                UploadCompressionType compressionType =
+                        item.getFieldName().contentEquals("uncompressedfile") ? UploadCompressionType.NONE :
+                                (item.getFieldName().contentEquals("gzippedfile") ? UploadCompressionType.GZIP :
+                                        UploadCompressionType.DEFAULT);
+                
+                OutputStream uncompressedStream = new ByteArrayOutputStream();
+                final int bufSize = 1024;
+                final byte[] buf = new byte[bufSize];
+                int read;
+                switch(compressionType)
                 {
-                	// The uncompressed file can also be uploaded by naming the file upload field
-                	// 'uncompressed' - otherwise assume it's compressed... 
-                	UploadCompressionType compressionType = UploadCompressionType.DEFAULT;
-                	if(item.getFieldName().contentEquals("uncompressedfile"))
-                	{
-                		compressionType = UploadCompressionType.NONE;
-                	}
-                	else if (item.getFieldName().contentEquals("gzippedfile"))
-                	{
-                		compressionType = UploadCompressionType.GZIP;
-                	}
-                	
-
-                    OutputStream uncompressedStream = new ByteArrayOutputStream();
-                    switch(compressionType)
+                case NONE:
+                    while((read = stream.read(buf)) != -1)
+                        uncompressedStream.write(buf, 0, read);
+                    break;
+                case GZIP:
+                    try
                     {
-	                    case NONE:
-		                	int readByte;
-		                	while((readByte = stream.read()) != -1)
-		                	{
-		                		uncompressedStream.write(readByte);
-		                	}
-		                break;
-
-	                    case GZIP:
-	                    	try
-	                    	{
-		                    	GZIPInputStream gzipInputStream =  new GZIPInputStream(stream);
-		                    	int gzReadByte;
-				                while((gzReadByte = gzipInputStream.read()) != -1)
-			                	{
-			                		uncompressedStream.write(gzReadByte);
-			                	}
-				                gzipInputStream.close();
-	                    	}
-	                    	catch(IOException ex)
-	                    	{
-		                        throw new ServletException("Failed to uncompress file (gz)", ex);
-	                    	}
-	                    break;
-	                    
-                    	default:
-	                	// uncompress
-	                    if (!CompressionUtils.uncompress(stream, uncompressedStream))
-	                    {
-	                        throw new ServletException("Failed to uncompress file (default)");
-	                    }
-	                    break;
+                        GZIPInputStream gzipInputStream =  new GZIPInputStream(stream);
+                        while((read = gzipInputStream.read(buf)) != -1)
+                            uncompressedStream.write(buf, 0, read);
+                        gzipInputStream.close();
                     }
-                    // parse and persist file entries
-                    parseAndPersistEntries(uncompressedStream.toString());
+                    catch(IOException ex)
+                    {
+                        throw new ServletException("Failed to uncompress file (gz)", ex);
+                    }
+                    break;
+                    
+                default:
+                    // uncompress
+                    if (!CompressionUtils.uncompress(stream, uncompressedStream))
+                    {
+                        throw new ServletException("Failed to uncompress file (default)");
+	                }
+	                    break;
                 }
+                // parse and persist file entries
+                parseAndPersistEntries(uncompressedStream.toString());
             }
         }
-        catch (FileUploadException ex) {
-            log.warning(ex.toString());
-        }
-        catch (IOException ex) {
-            log.warning(ex.toString());
-        }
-        catch (ServletException ex) {
+        catch(Exception ex) 
+        {
             log.warning(ex.toString());
         }
         

@@ -25,23 +25,28 @@ public class PageController {
     	return new ModelAndView("page/main", "message", "");
     }
 
-    @SuppressWarnings("unchecked")	   
     @RequestMapping(value = "/delete_all", method = RequestMethod.POST)
     public ModelAndView deleteAll() {
     	PersistenceManager pm = PMF.get().getPersistenceManager();
-
-    	Query query = pm.newQuery(SignalStrengthOnLocationChangeEntry.class);
-    	List<SignalStrengthOnLocationChangeEntry> sseList = (List<SignalStrengthOnLocationChangeEntry>) query.execute();
-    	pm.deletePersistentAll(sseList);
-
-    	query = pm.newQuery(Location.class);
-    	List<Location> locList = (List<Location>) query.execute();
-    	pm.deletePersistentAll(locList);
-
-    	query = pm.newQuery(TelephonyStateEntry.class);
-    	List<TelephonyStateEntry> tseList = (List<TelephonyStateEntry>) query.execute();
-    	pm.deletePersistentAll(tseList);
-
+    	
+    	Class<?>[] models = new Class<?>[]{
+    	        CellLocationEntry.class,
+    	        DataConnectionStateEntry.class,
+    	        Location.class,
+    	        ServiceStateEntry.class,
+    	        SignalStrengthEntry.class,
+    	        SignalStrengthOnLocationChangeEntry.class,
+    	        TelephonyStateEntry.class,
+    	        WifiEntry.class
+    	};
+    	
+    	for(Class<?> clazz : models)
+    	{
+    	    Query query = pm.newQuery(clazz);
+    	    List<?> list = (List<?>)query.execute();
+    	    pm.deletePersistentAll(list);
+    	}
+    	
     	ModelAndView mv = new ModelAndView("page/main");
     	mv.addObject("message", "Everything in database has been deleted!");
     	return mv;

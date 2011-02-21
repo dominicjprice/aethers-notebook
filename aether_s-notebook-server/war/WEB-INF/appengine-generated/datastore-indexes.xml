@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<datastore-indexes
-  autoGenerate="true">
+<datastore-indexes autoGenerate="true">
+<datastore-index kind="NeighbouringCell" ancestor="true" source="manual">
+        <property name="neighbouringCells_INTEGER_IDX" direction="asc"/>
+    </datastore-index>
 </datastore-indexes>
