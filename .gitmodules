@@ -1,0 +1,3 @@
+[submodule "Aether-s-Notebook-Android-Client"]
+	path = Aether-s-Notebook-Android-Client
+	url = git@github.com:dominicjprice/Aether-s-Notebook-Android-Client.git
