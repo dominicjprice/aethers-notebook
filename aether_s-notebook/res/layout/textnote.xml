@@ -1,8 +1,0 @@
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android" android:id="@+id/ScrollView01" android:layout_width="wrap_content" android:layout_height="wrap_content">
-<LinearLayout android:id="@+id/LinearLayout01" android:layout_width="fill_parent" android:layout_height="fill_parent"  android:gravity="fill_horizontal" android:orientation="vertical">
-<EditText android:text="@+id/EditText01" android:id="@+id/EditText01" android:layout_width="wrap_content" android:layout_height="wrap_content" android:gravity="fill_horizontal"></EditText>
-<Button android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Tag" android:id="@+id/TextViewTag"></Button>
-<TextView android:id="@+id/TextNoteGPS" android:layout_width="wrap_content" android:layout_height="wrap_content"></TextView>
-</LinearLayout>
-</ScrollView>
-
