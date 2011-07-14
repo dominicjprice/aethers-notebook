@@ -4,3 +4,6 @@
 [submodule "Aether-s-Notebook-Azure-Server"]
 	path = Aether-s-Notebook-Azure-Server
 	url = git@github.com:dominicjprice/Aether-s-Notebook-Azure-Server.git
+[submodule "Aether-s-Notebook-Android-Client-Examples"]
+	path = Aether-s-Notebook-Android-Client-Examples
+	url = git@github.com:dominicjprice/Aether-s-Notebook-Android-Client-Examples.git
