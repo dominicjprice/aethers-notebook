@@ -8,5 +8,5 @@
 	path = Aether-s-Notebook-Android-Client-Examples
 	url = git@github.com:dominicjprice/Aether-s-Notebook-Android-Client-Examples.git
 [submodule "Aether-s-Notebook-Android-Client-Azure-Appender"]
-        path = Aether-s-Notebook-Android-Client-Azure-Appender
-        url = git@github.com:dominicjprice/Aether-s-Notebook-Android-Client-Azure-Appender.git
+	path = Aether-s-Notebook-Android-Client-Azure-Appender
+	url = git@github.com:dominicjprice/Aether-s-Notebook-Android-Client-Azure-Appender.git
